@@ -38,6 +38,27 @@ namespace Biblioteca
         }
 
 
+        private void AtualizarInfoClube()
+        {
+            //Ficheiro de texto para uma lista
+            string ficheiro = "clubeInfo.txt";
+            List<string> clubes = new List<string>();
+
+            var sr = new StreamReader(ficheiro);
+            string linha;
+
+            while ((linha = sr.ReadLine()) != null)
+            {
+                clubes.Add(linha);
+            }
+
+
+
+        }
+
+        /// <summary>
+        /// Gravar os clubes num ficheiro de texto após a sua criação
+        /// </summary>
         private void GravarInfoClube()
         {
             string ficheiro = "clubeInfo.txt";

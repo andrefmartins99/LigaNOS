@@ -8,7 +8,7 @@ namespace Biblioteca
     {
         public int Posicao { get; }
 
-        public int IdEquipa { get; }
+        public int Nome { get; }
 
         public int Pontos { get; }
 

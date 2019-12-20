@@ -6,6 +6,8 @@ namespace Biblioteca
 {
     public class Classificacao
     {
+        //Propriedades
+
         public int Posicao { get; }
 
         public int Nome { get; }
@@ -24,12 +26,6 @@ namespace Biblioteca
 
         public int GolosSofridos { get; }
 
-        public int DiferencaGolos
-        {
-            get
-            {
-                return GolosMarcados - GolosSofridos;
-            }
-        }
+        public int DiferencaGolos { get; }
     }
 }

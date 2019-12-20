@@ -7,14 +7,20 @@ namespace Biblioteca
 {
     public class Arbitro
     {
+        //Propriedades
         public int IdArbitro { get; set; }
 
         public string Nome { get; set; }
 
 
+        //Métodos
+
+        /// <summary>
+        /// Gravar os árbitros num ficheiro de texto após a sua criação
+        /// </summary>
         private void GravarInfoArbitro()
         {
-            string ficheiro = "ArbitroInfo.txt";
+            string ficheiro = "arbitroInfo.txt";
             string linha = $"{IdArbitro};{Nome}";
 
             StreamWriter sw = new StreamWriter(ficheiro, true);
@@ -26,6 +32,15 @@ namespace Biblioteca
 
             sw.WriteLine(linha);
             sw.Close();
+        }
+
+        /// <summary>
+        /// Apagar o ficheiro que contém a informação dos árbitros
+        /// </summary>
+        private void ApagarInfoArbitro()
+        {
+            string ficheiro = "arbitroInfo.txt";
+            File.Delete(ficheiro);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Biblioteca
@@ -8,24 +9,28 @@ namespace Biblioteca
     {
         //Propriedades
 
-        public int Posicao { get; }
+        public int Posicao { get; set; }
 
-        public int Nome { get; }
+        public List<string> Classificacoes { get; set; }
 
-        public int Pontos { get; }
 
-        public int NumJogos { get; }
+        //Métodos
 
-        public int NumVitorias { get; }
+        private void PreencherListaClassificacoes()
+        {
+            string ficheiro = "estatisticaClube.txt";
+            var linha = File.ReadAllLines(ficheiro);
+            Classificacoes = new List<string>();
 
-        public int NumDerrotas { get; }
+            foreach (var linhas in linha)
+            {
+                Classificacoes.Add(linhas);
+            }
+        }
 
-        public int NumEmpates { get; }
-
-        public int GolosMarcados { get; }
-
-        public int GolosSofridos { get; }
-
-        public int DiferencaGolos { get; }
+        private void OrdenarClassificacoes()
+        {
+            Classificacoes.Sort();
+        }
     }
 }

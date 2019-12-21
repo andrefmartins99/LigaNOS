@@ -16,7 +16,7 @@ namespace Biblioteca
         //Métodos
 
         /// <summary>
-        /// Gravar os árbitros num ficheiro de texto após a sua criação
+        /// Gravar os árbitros num ficheiro de texto
         /// </summary>
         private void GravarInfoArbitro()
         {

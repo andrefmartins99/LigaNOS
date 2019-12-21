@@ -58,14 +58,29 @@ namespace Biblioteca
             sw.Close();
         }
 
-        private void AtualizarInfoJogo(int Id)
+        /// <summary>
+        /// Atualizar a info do jogo
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="golosEquipaCasa"></param>
+        /// <param name="golosEquipaFora"></param>
+        private void AtualizarInfoJogo(int id, int golosEquipaCasa, int golosEquipaFora)
         {
             string ficheiro = "jogoInfo.txt";
-            string linha = File.ReadAllLines(ficheiro).LastOrDefault(linhas => linhas.StartsWith(Id.ToString()));
+            string linha = File.ReadAllLines(ficheiro).LastOrDefault(linhas => linhas.StartsWith(id.ToString()));
             string texto = File.ReadAllText(ficheiro);
             string linhaa;
 
+            if (linha != null)
+            {
+                GolosEquipaCasa = golosEquipaCasa;
+                GolosEquipaFora = golosEquipaFora;
 
+                linhaa = $"{IdJogo};{NomeEquipaCasa};{NomeEquipaFora};{Data};{NomeArbitro};{Estadio};{IdJornada};{GolosEquipaCasa};{GolosEquipaFora};{Resultado}";
+
+                texto = texto.Replace(linha, linhaa);
+                File.WriteAllText(ficheiro, texto);
+            }
         }
 
         /// <summary>

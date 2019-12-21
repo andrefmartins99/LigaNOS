@@ -43,12 +43,13 @@ namespace Biblioteca
         //Métodos
 
         /// <summary>
-        /// Gravar os clubes num ficheiro de texto após a sua criação
+        /// Gravar os clubes e as suas estatísticas num ficheiro de texto
         /// </summary>
-        private void GravarInfoClube()
+        private void GravarClube()
         {
+            //Info do clube
             string ficheiro = "clubeInfo.txt";
-            string linha = $"{IdClube};{Nome};{Treinador};{Estadio};{Pontos};{NumJogos};{NumVitorias};{NumDerrotas};{NumEmpates};{GolosMarcados};{GolosSofridos};{DiferencaGolos}";
+            string linha = $"{IdClube};{Nome};{Treinador};{Estadio}";
 
             StreamWriter sw = new StreamWriter(ficheiro, true);
 
@@ -59,41 +60,51 @@ namespace Biblioteca
 
             sw.WriteLine(linha);
             sw.Close();
+
+            //Estatística do clube
+            string ficheiros = "estatisticaClube.txt";
+            string linhas = $"{Nome};{Pontos};{NumJogos};{NumVitorias};{NumDerrotas};{NumEmpates};{GolosMarcados};{GolosSofridos};{DiferencaGolos}";
+
+            StreamWriter sws = new StreamWriter(ficheiros, true);
+
+            if (!File.Exists(ficheiros))
+            {
+                sw = File.CreateText(ficheiros);
+            }
+
+            sw.WriteLine(linhas);
+            sw.Close();
         }
 
         /// <summary>
-        /// Atualizar a info do clube após o jogo
+        /// Atualizar a estatística do clube após o jogo
         /// </summary>
-        /// <param name="Id"></param>
+        /// <param name="nome"></param>
         /// <param name="pontos"></param>
-        /// <param name="numjogos"></param>
-        /// <param name="numvitorias"></param>
-        /// <param name="numderrotas"></param>
-        /// <param name="numempates"></param>
-        /// <param name="golosmarcados"></param>
-        /// <param name="golossofridos"></param>
-        private void AtualizarInfoClube(int Id, int pontos, int numjogos, int numvitorias, int numderrotas, int numempates, int golosmarcados, int golossofridos)
+        /// <param name="numJogos"></param>
+        /// <param name="numVitorias"></param>
+        /// <param name="numDerrotas"></param>
+        /// <param name="numEmpates"></param>
+        /// <param name="golosMarcados"></param>
+        /// <param name="golosSofridos"></param>
+        private void AtualizarEstatisticaClube(string nome, int pontos, int numJogos, int numVitorias, int numDerrotas, int numEmpates, int golosMarcados, int golosSofridos)
         {
-            string ficheiro = "clubeInfo.txt";
-            string linha = File.ReadAllLines(ficheiro).LastOrDefault(linhas => linhas.StartsWith(Id.ToString()));
+            string ficheiro = "estatisticaClube.txt";
+            string linha = File.ReadAllLines(ficheiro).LastOrDefault(linhas => linhas.StartsWith(nome));
             string texto = File.ReadAllText(ficheiro);
             string linhaa;
 
             if (linha != null)
             {
-                IdClube = IdClube;
-                Nome = Nome;
-                Treinador = Treinador;
-                Estadio = Estadio;
                 Pontos += pontos;
-                NumJogos += numjogos;
-                NumVitorias += numvitorias;
-                NumDerrotas += numderrotas;
-                NumEmpates += numempates;
-                GolosMarcados += golosmarcados;
-                GolosSofridos += golossofridos;
+                NumJogos += numJogos;
+                NumVitorias += numVitorias;
+                NumDerrotas += numDerrotas;
+                NumEmpates += numEmpates;
+                GolosMarcados += golosMarcados;
+                GolosSofridos += golosSofridos;
 
-                linhaa = $"{IdClube};{Nome};{Treinador};{Estadio};{Pontos};{NumJogos};{NumVitorias};{NumDerrotas};{NumEmpates};{GolosMarcados};{GolosSofridos};{DiferencaGolos}";
+                linhaa = $"{Nome};{Pontos};{NumJogos};{NumVitorias};{NumDerrotas};{NumEmpates};{GolosMarcados};{GolosSofridos};{DiferencaGolos}";
 
                 texto = texto.Replace(linha, linhaa);
                 File.WriteAllText(ficheiro, texto);
@@ -101,12 +112,14 @@ namespace Biblioteca
         }
 
         /// <summary>
-        /// Apagar o ficheiro que contém a informação dos clubes
+        /// Apagar os ficheiros que contêm a informação e a estatística dos clubes
         /// </summary>
-        private void ApagarInfoClube()
+        private void ApagarClube()
         {
             string ficheiro = "clubeInfo.txt";
+            string ficheiros = "estatisticaClube.txt";
             File.Delete(ficheiro);
+            File.Delete(ficheiros);
         }
     }
 }

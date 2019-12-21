@@ -22,7 +22,7 @@ namespace Biblioteca
         private void PreencherListaJornadas()
         {
             string ficheiro = "jogoInfo.txt";
-            var linha = File.ReadLines(ficheiro);
+            var linha = File.ReadAllLines(ficheiro);
             Jornadas = new List<string>();
 
             foreach (var linhas in linha)

@@ -11,6 +11,8 @@ namespace Biblioteca
 
         public int IdJornada { get; set; }
 
+        public DateTime Data { get; set; }
+
         public List<string> Jornadas { get; set; }
 
 

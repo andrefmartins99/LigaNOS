@@ -12,13 +12,13 @@ namespace Biblioteca
 
         public int IdJogo { get; set; }
 
-        public string NomeEquipaCasa { get; set; }
+        public int IdEquipaCasa { get; set; }
 
-        public string NomeEquipaFora { get; set; }
+        public int IdEquipaFora { get; set; }
 
         public DateTime Data { get; set; }
 
-        public string NomeArbitro { get; set; }
+        public int IdArbitro { get; set; }
 
         public string Estadio { get; set; }
 
@@ -45,7 +45,7 @@ namespace Biblioteca
         private void GravarInfoJogo()
         {
             string ficheiro = "jogoInfo.txt";
-            string linha = $"{IdJogo};{NomeEquipaCasa};{NomeEquipaFora};{Data};{NomeArbitro};{Estadio};{IdJornada};{GolosEquipaCasa};{GolosEquipaFora};{Resultado}";
+            string linha = $"{IdJogo};{IdEquipaCasa};{IdEquipaFora};{Data};{IdArbitro};{Estadio};{IdJornada};{GolosEquipaCasa};{GolosEquipaFora};{Resultado}";
 
             StreamWriter sw = new StreamWriter(ficheiro, true);
 
@@ -76,7 +76,7 @@ namespace Biblioteca
                 GolosEquipaCasa = golosEquipaCasa;
                 GolosEquipaFora = golosEquipaFora;
 
-                linhaa = $"{IdJogo};{NomeEquipaCasa};{NomeEquipaFora};{Data};{NomeArbitro};{Estadio};{IdJornada};{GolosEquipaCasa};{GolosEquipaFora};{Resultado}";
+                linhaa = $"{IdJogo};{IdEquipaCasa};{IdEquipaFora};{Data};{IdArbitro};{Estadio};{IdJornada};{GolosEquipaCasa};{GolosEquipaFora};{Resultado}";
 
                 texto = texto.Replace(linha, linhaa);
                 File.WriteAllText(ficheiro, texto);

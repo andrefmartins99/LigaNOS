@@ -17,7 +17,7 @@ namespace Biblioteca
         //Métodos
 
         /// <summary>
-        /// Preechimento da lista Jornadas com os jogos dessa jornada
+        /// Preencher a lista Jornadas com os jogos dessa jornada
         /// </summary>
         private void PreencherListaJornadas()
         {

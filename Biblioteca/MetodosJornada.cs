@@ -5,36 +5,24 @@ using System.Text;
 
 namespace Biblioteca
 {
-    public class Jornada
+    public class MetodosJornada
     {
-        //Propriedades
-
-        public int IdJornada { get; set; }
-
-        public DateTime Data { get; set; }
-
-        public List<string> Jornadas { get; set; }
-
-
-        //Métodos
-
         /// <summary>
         /// Preencher a lista Jornadas com os jogos dessa jornada
         /// </summary>
-        private void PreencherListaJornadas()
+        public void PreencherListaJornadas(DadosJornada jornada)
         {
             string ficheiro = "jogoInfo.txt";
             var linha = File.ReadAllLines(ficheiro);
-            Jornadas = new List<string>();
+            jornada.Jornadas = new List<string>();
 
             foreach (var linhas in linha)
             {
-                if (linhas.Contains(IdJornada.ToString()))
+                if (linhas.Contains(jornada.IdJornada.ToString()))
                 {
-                    Jornadas.Add(linhas);
+                    jornada.Jornadas.Add(linhas);
                 }
             }
-        }skdhghfshdfghdsk
-
+        }
     }
 }

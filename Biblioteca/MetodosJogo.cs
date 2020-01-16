@@ -77,7 +77,7 @@ namespace Biblioteca
 
             for (int i = 0; i < Clubes.Count; i++)
             {
-                var campos = Clubes[i].ToString().Split(',');
+                var campos = Clubes[i].ToString().Split(';');
                 string id = campos[0];
                 clubes.Add(id);
             }
@@ -767,9 +767,10 @@ namespace Biblioteca
         /// <param name="Clubes"></param>
         public void NomeClubes(List<string> voltas1, List<string> voltas2, List<DadosClube> Clubes)
         {
+            //Clubes que jogam em casa
             for (int i = 0; i < Clubes.Count; i++)
             {
-                var campos = Clubes[i].ToString().Split(',');
+                var campos = Clubes[i].ToString().Split(';');
                 string id = campos[0];
                 string nome = campos[1];
 
@@ -778,12 +779,38 @@ namespace Biblioteca
                 {
                     var info = voltas1[j].Split(';');
                     string casa = info[0];
-                    string fora = info[1];
 
                     if (casa == id)
                     {
                         voltas1[j] = voltas1[j] + ";" + nome;
                     }
+                }
+
+                //Segunda volta
+                for (int j = 0; j < voltas2.Count; j++)
+                {
+                    var info = voltas2[j].Split(';');
+                    string casa = info[0];
+
+                    if (casa == id)
+                    {
+                        voltas2[j] = voltas2[j] + ";" + nome;
+                    }
+                }
+            }
+
+            //Clubes que jogam fora
+            for (int i = 0; i < Clubes.Count; i++)
+            {
+                var campos = Clubes[i].ToString().Split(';');
+                string id = campos[0];
+                string nome = campos[1];
+
+                //Primeira volta
+                for (int j = 0; j < voltas1.Count; j++)
+                {
+                    var info = voltas1[j].Split(';');
+                    string fora = info[1];
 
                     if (fora == id)
                     {
@@ -795,13 +822,7 @@ namespace Biblioteca
                 for (int j = 0; j < voltas2.Count; j++)
                 {
                     var info = voltas2[j].Split(';');
-                    string casa = info[0];
                     string fora = info[1];
-
-                    if (casa == id)
-                    {
-                        voltas2[j] = voltas2[j] + ";" + nome;
-                    }
 
                     if (fora == id)
                     {
@@ -818,10 +839,10 @@ namespace Biblioteca
         public void DataVolta1(List<string> voltas1)
         {
             //(ano, mes, dia, horas, minutos, segundos)
-            DateTime data1 = new DateTime(2020, 1, 4, 15, 0, 0);
-            DateTime data2 = new DateTime(2020, 1, 4, 13, 0, 0);
-            DateTime data3 = new DateTime(2020, 1, 5, 14, 0, 0);
-            DateTime data4 = new DateTime(2020, 1, 5, 16, 0, 0);
+            DateTime data1 = new DateTime(2020, 2, 22, 15, 0, 0);
+            DateTime data2 = new DateTime(2020, 2, 22, 13, 0, 0);
+            DateTime data3 = new DateTime(2020, 2, 23, 14, 0, 0);
+            DateTime data4 = new DateTime(2020, 2, 23, 16, 0, 0);
             int tamanhoi = 0;
             int tamanhof = 4;
             int reset;
@@ -893,10 +914,10 @@ namespace Biblioteca
         /// <param name="voltas2"></param>
         public void DataVolta2(List<string> voltas2)
         {
-            DateTime data1 = new DateTime(2020, 3, 7, 15, 0, 0);
-            DateTime data2 = new DateTime(2020, 3, 7, 13, 0, 0);
-            DateTime data3 = new DateTime(2020, 3, 8, 14, 0, 0);
-            DateTime data4 = new DateTime(2020, 3, 8, 16, 0, 0);
+            DateTime data1 = new DateTime(2020, 4, 18, 15, 0, 0);
+            DateTime data2 = new DateTime(2020, 4, 18, 13, 0, 0);
+            DateTime data3 = new DateTime(2020, 4, 19, 14, 0, 0);
+            DateTime data4 = new DateTime(2020, 4, 19, 16, 0, 0);
             int tamanhoi = 0;
             int tamanhof = 4;
             int reset;
@@ -1072,7 +1093,7 @@ namespace Biblioteca
         {
             for (int i = 0; i < Clubes.Count; i++)
             {
-                var campos = Clubes[i].ToString().Split(',');
+                var campos = Clubes[i].ToString().Split(';');
                 string id = campos[0];
                 string estadio = campos[3];
 
@@ -1259,6 +1280,44 @@ namespace Biblioteca
                 dadosJogo.GolosClubeFora = Convert.ToInt32(campos[10]);
 
                 Jogos.Add(dadosJogo);
+            }
+
+            return Jogos;
+        }
+
+        public List<DadosJogo> LerFicheiroJogos(List<DadosJogo> Jogos, DadosJogo dadosJogo)
+        {
+            string ficheiro = "jogoInfo.txt";
+            Jogos = new List<DadosJogo>();
+
+            StreamReader sr;
+
+            if (File.Exists(ficheiro))
+            {
+                sr = File.OpenText(ficheiro);
+
+                string linha = string.Empty;
+
+                while ((linha = sr.ReadLine()) != null)
+                {
+                    var campos = linha.Split(';');
+
+                    dadosJogo = new DadosJogo();
+
+                    dadosJogo.IdJogo = campos[0];
+                    dadosJogo.NomeClubeCasa = campos[1];
+                    dadosJogo.NomeClubeFora = campos[2];
+                    dadosJogo.Dia = Convert.ToDateTime(campos[3]);
+                    dadosJogo.Hora = Convert.ToDateTime(campos[4]);
+                    dadosJogo.Estadio = campos[5];
+                    dadosJogo.IdJornada = campos[6];
+                    dadosJogo.GolosClubeCasa = Convert.ToInt32(campos[7]);
+                    dadosJogo.GolosClubeFora = Convert.ToInt32(campos[8]);
+
+                    Jogos.Add(dadosJogo);
+                }
+
+                sr.Close();
             }
 
             return Jogos;

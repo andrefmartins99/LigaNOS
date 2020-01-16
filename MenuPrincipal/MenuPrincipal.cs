@@ -17,7 +17,10 @@ namespace MenuPrincipal
         MetodosClube metodosClube;
         DadosJogo dadosJogo;
         MetodosJogo metodosJogo;
+        DadosJornada dadosJornada;
+        MetodosJornada metodosJornada;
         int contaCLubes = 0;
+        int contaJogos = 0;
 
         public MenuPrincipal()
         {
@@ -25,6 +28,8 @@ namespace MenuPrincipal
             metodosClube = new MetodosClube();
             dadosJogo = new DadosJogo();
             metodosJogo = new MetodosJogo();
+            dadosJornada = new DadosJornada();
+            metodosJornada = new MetodosJornada();
             InitializeComponent();
         }
 
@@ -32,6 +37,8 @@ namespace MenuPrincipal
         {
             dadosClube.Clubes = metodosClube.LerFicheiroClubes(dadosClube.Clubes, dadosClube);
             VerificarClubes();
+            dadosJogo.Jogos = metodosJogo.LerFicheiroJogos(dadosJogo.Jogos, dadosJogo);
+            verificarJogos();
         }
 
         public void VerificarClubes()
@@ -67,6 +74,7 @@ namespace MenuPrincipal
         {
             listBoxClubes.DataSource = null;
             listBoxClubes.DataSource = dadosClube.Clubes;
+            listBoxClubes.ClearSelected();
         }
 
         private void btnCriarClube_Click(object sender, EventArgs e)
@@ -74,16 +82,25 @@ namespace MenuPrincipal
             CriarEquipa criarEquipa = new CriarEquipa(this, dadosClube.Clubes);
             criarEquipa.Show();
             btnCriarClube.Enabled = false;
+            btnApagarClube.Enabled = false;
+            btnEditarClube.Enabled = false;
+            listBoxClubes.Enabled = false;
         }
 
         public void EstadobtnCriar()
         {
             btnCriarClube.Enabled = true;
+            btnApagarClube.Enabled = true;
+            btnEditarClube.Enabled = true;
+            listBoxClubes.Enabled = true;
         }
 
         public void EstadobtnEditar()
         {
             btnEditarClube.Enabled = true;
+            btnCriarClube.Enabled = true;
+            btnApagarClube.Enabled = true;
+            listBoxClubes.Enabled = true;
         }
 
         private void btnApagarClube_Click(object sender, EventArgs e)
@@ -138,6 +155,9 @@ namespace MenuPrincipal
                     EditarEquipa editarEquipa = new EditarEquipa(this, editado, dadosClube.Clubes);
                     editarEquipa.Show();
                     btnEditarClube.Enabled = false;
+                    btnCriarClube.Enabled = false;
+                    btnApagarClube.Enabled = false;
+                    listBoxClubes.Enabled = false;
                 }
             }
         }
@@ -149,8 +169,106 @@ namespace MenuPrincipal
             btnApagarClube.Visible = false;
             btnEditarClube.Visible = false;
             btnComecar.Visible = false;
+            dgvJornadas.Visible = true;
+            lblJornadasInfo.Visible = true;
+            cbJornadas.Visible = true;
+            btnMostrarClassificacao.Visible = true;
 
             dadosJogo.Jogos = metodosJogo.CriarJogosCampeonato(dadosJogo.Jogos, dadosJogo, dadosClube.Clubes);
+            PreencherComboBoxJornadas();
+            cbJornadas.SelectedIndex = 0;
+        }
+
+        public void verificarJogos()
+        {
+            contaJogos = dadosJogo.Jogos.Count;
+
+            if (contaJogos == 56)
+            {
+                listBoxClubes.Visible = false;
+                lblclubeInfo.Visible = false;
+                btnApagarClube.Visible = false;
+                btnEditarClube.Visible = false;
+                btnCriarClube.Visible = false;
+                btnComecar.Visible = false;
+                dgvJornadas.Visible = true;
+                dgvJornadas.Enabled = false;
+                lblJornadasInfo.Visible = true;
+                cbJornadas.Visible = true;
+                btnMostrarClassificacao.Visible = true;
+
+                PreencherComboBoxJornadas();
+                cbJornadas.SelectedIndex = 0;
+            }
+        }
+
+        public void PreencherDataGridViewJornadas(string id)
+        {
+            dadosJornada.Jornadas = metodosJornada.PreencherListaJornadas(dadosJornada.Jornadas, dadosJornada, dadosJogo.Jogos, id);
+
+            dgvJornadas.Columns.Clear();
+            dgvJornadas.Rows.Clear();
+            dgvJornadas.ColumnCount = 4;
+            dgvJornadas.Columns[0].Name = "Data Jogo";
+            dgvJornadas.Columns[1].Name = "Clube Casa";
+            dgvJornadas.Columns[2].Name = "Clube Fora";
+            dgvJornadas.Columns[3].Name = "Resultado";
+            dgvJornadas.Columns[3].Width = 70;
+            dgvJornadas.Columns[0].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvJornadas.Columns[1].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvJornadas.Columns[2].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvJornadas.Columns[3].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvJornadas.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvJornadas.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvJornadas.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvJornadas.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvJornadas.RowHeadersVisible = false;
+            dgvJornadas.ScrollBars = ScrollBars.None;
+
+            foreach (var jogos in dadosJornada.Jornadas)
+            {
+                var campos = jogos.ToString().Split(';');
+                string[] row = { $"{campos[2]} {campos[3]}", campos[0], campos[1], campos[4] };
+                dgvJornadas.Rows.Add(row);
+            }
+
+            dgvJornadas.ClearSelection();
+        }
+
+        public void PreencherComboBoxJornadas()
+        {
+            for (int i = 0; i < dadosJogo.Jogos.Count; i++)
+            {
+                if (i == 0)
+                {
+                    cbJornadas.Items.Add(metodosJornada.NumeroJornadas(dadosJogo.Jogos, dadosJogo, i));
+                }
+                else
+                {
+                    string id;
+
+                    id = metodosJornada.NumeroJornadas(dadosJogo.Jogos, dadosJogo, i);
+
+                    if (!cbJornadas.Items.Contains(id))
+                    {
+                        cbJornadas.Items.Add(id);
+                    }
+                }
+            }
+        }
+
+        private void cbJornadas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PreencherDataGridViewJornadas(cbJornadas.SelectedItem.ToString());
+        }
+
+        private void btnMostrarClassificacao_Click(object sender, EventArgs e)
+        {
+            Classificacao classificacao = new Classificacao(this, dadosClube.Clubes);
+            classificacao.Show();
+            btnMostrarClassificacao.Enabled = false;
+            cbJornadas.Enabled = false;
+            dgvJornadas.Enabled = false;
         }
     }
 }

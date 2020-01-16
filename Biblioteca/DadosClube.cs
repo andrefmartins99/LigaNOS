@@ -40,7 +40,7 @@ namespace Biblioteca
 
         public override string ToString()
         {
-            return $"{IdClube},{Nome},{Treinador},{Estadio}";
+            return $"{IdClube};{Nome};{Treinador};{Estadio}";
         }
     }
 }

@@ -10,19 +10,42 @@ namespace Biblioteca
         /// <summary>
         /// Preencher a lista Jornadas com os jogos dessa jornada
         /// </summary>
-        public void PreencherListaJornadas(DadosJornada jornada)
+        public List<DadosJornada> PreencherListaJornadas(List<DadosJornada> Jornadas, DadosJornada dadosJornada, List<DadosJogo> Jogos, string IdJornada)
         {
-            string ficheiro = "jogoInfo.txt";
-            var linha = File.ReadAllLines(ficheiro);
-            jornada.Jornadas = new List<string>();
+            Jornadas = new List<DadosJornada>();
 
-            foreach (var linhas in linha)
+            foreach (var jogos in Jogos)
             {
-                if (linhas.Contains(jornada.IdJornada.ToString()))
+                if (jogos.ToString().Contains(IdJornada))
                 {
-                    jornada.Jornadas.Add(linhas);
+                    var campos = jogos.ToString().Split(';');
+
+                    dadosJornada = new DadosJornada();
+
+                    dadosJornada.IdJornada = IdJornada;
+                    dadosJornada.NomeClubeCasa = campos[1];
+                    dadosJornada.NomeClubeFora = campos[2];
+                    dadosJornada.Dia = Convert.ToDateTime(campos[3]);
+                    dadosJornada.Hora = Convert.ToDateTime(campos[4]);
+                    dadosJornada.GolosClubeCasa = Convert.ToInt32(campos[7]);
+                    dadosJornada.GolosClubeFora = Convert.ToInt32(campos[8]);
+
+                    Jornadas.Add(dadosJornada);
                 }
             }
+
+            return Jornadas;
+        }
+
+        public string NumeroJornadas(List<DadosJogo> Jogos, DadosJogo dadosJogo, int i)
+        {
+            string IdJornada;
+
+            var campos = Jogos[i].ToString().Split(';');
+
+            IdJornada = campos[6];
+
+            return IdJornada;
         }
     }
 }

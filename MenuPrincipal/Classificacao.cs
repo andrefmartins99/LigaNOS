@@ -17,6 +17,7 @@ namespace MenuPrincipal
         MetodosClassificacao metodosClassificacao;
         List<DadosClube> Clubes;
         MenuPrincipal form;
+        int posicao = 1;
 
         public Classificacao(MenuPrincipal Form, List<DadosClube> clubes)
         {
@@ -25,7 +26,28 @@ namespace MenuPrincipal
             Clubes = clubes;
             metodosClassificacao = new MetodosClassificacao();
             dadosClassificacao = new DadosClassificacao();
-            metodosClassificacao.PreencherListaClassificacoes(clubes, dadosClassificacao.Classificacoes, dadosClassificacao);
+            dadosClassificacao.Classificacoes = metodosClassificacao.PreencherListaClassificacoes(clubes, dadosClassificacao.Classificacoes, dadosClassificacao);
+            PreencherDataGridViewClassificacao();
+        }
+
+        public void PreencherDataGridViewClassificacao()
+        {
+
+            foreach (var clube in dadosClassificacao.Classificacoes)
+            {
+                string[] row = { posicao.ToString(), clube.Nome, clube.Pontos.ToString(), clube.NumJogos.ToString(), clube.NumVitorias.ToString(), clube.NumDerrotas.ToString(), clube.NumEmpates.ToString(), clube.GolosMarcados.ToString(), clube.GolosSofridos.ToString(), clube.DiferencaGolos.ToString() };
+
+                dgvClassificacao.Rows.Add(row);
+                posicao++;
+            }
+
+            dgvClassificacao.ClearSelection();
+        }
+
+        private void btnVoltar_Click(object sender, EventArgs e)
+        {
+            form.EstadoBtnVoltar();
+            this.Close();
         }
     }
 }

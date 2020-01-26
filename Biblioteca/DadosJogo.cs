@@ -38,9 +38,11 @@ namespace Biblioteca
 
         public List<DadosJogo> Jogos { get; set; }
 
+        public bool JogoJogado { get; set; }
+
         public override string ToString()
         {
-            return $"{IdJogo};{NomeClubeCasa};{NomeClubeFora};{Dia.ToString("dd MMM").ToUpper()};{Hora.ToShortTimeString()};{Estadio};{IdJornada};{GolosClubeCasa};{GolosClubeFora};{Resultado}";
+            return $"{IdJogo};{NomeClubeCasa};{NomeClubeFora};{Dia.ToString("dd MMM").ToUpper()};{Hora.ToShortTimeString()};{Estadio};{IdJornada};{GolosClubeCasa};{GolosClubeFora};{Resultado};{JogoJogado}";
         }
     }
 }

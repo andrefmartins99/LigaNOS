@@ -148,52 +148,17 @@ namespace Biblioteca
         public void AtualizarListaClubes(List<DadosClube> Clubes, DadosClube dadosClube)
         {
             dadosClube = new DadosClube();
-
-            if (Clubes.Count > 1)
+            
+            for (int i = 0; i < Clubes.Count; i++)
             {
-                for (int i = 0; i < Clubes.Count; i++)
-                {
-                    dadosClube = Clubes[i];
-                    dadosClube.IdClube = AtualizarIdClube(Clubes, i);
-                    dadosClube.Nome = dadosClube.Nome;
-                    dadosClube.Treinador = dadosClube.Treinador;
-                    dadosClube.Estadio = dadosClube.Estadio;
+                dadosClube = Clubes[i];
+                dadosClube.IdClube = $"C0" + $"{i + 1}";
+                dadosClube.Nome = dadosClube.Nome;
+                dadosClube.Treinador = dadosClube.Treinador;
+                dadosClube.Estadio = dadosClube.Estadio;
 
-                    Clubes[i] = dadosClube;
-                }
+                Clubes[i] = dadosClube;
             }
-            else
-            {
-                for (int i = 0; i < Clubes.Count; i++)
-                {
-                    dadosClube = Clubes[i];
-                    dadosClube.IdClube = "C01";
-                    dadosClube.Nome = dadosClube.Nome;
-                    dadosClube.Treinador = dadosClube.Treinador;
-                    dadosClube.Estadio = dadosClube.Estadio;
-
-                    Clubes[i] = dadosClube;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Atualizar o Id dos clubes da lista Clubes após um clube ser apagado
-        /// </summary>
-        /// <param name="Clubes"></param>
-        /// <param name="l"></param>
-        /// <returns></returns>
-        public string AtualizarIdClube(List<DadosClube> Clubes, int l)
-        {
-            string idClube = string.Empty;
-            int id = l;
-
-            for (int i = 0; Clubes[i].ToString().StartsWith(idClube); i++)
-            {
-                idClube = "C0" + $"{id + 1}";
-            }
-
-            return idClube;
         }
     }
 }

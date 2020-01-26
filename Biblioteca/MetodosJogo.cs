@@ -14,7 +14,7 @@ namespace Biblioteca
         public void GravarInfoJogo(DadosJogo jogo)
         {
             string ficheiro = "jogoInfo.txt";
-            string linha = $"{jogo.IdJogo};{jogo.IdClubeCasa};{jogo.IdClubeFora};{jogo.Dia};{jogo.Hora};{jogo.Estadio};{jogo.IdJornada};{jogo.GolosClubeCasa};{jogo.GolosClubeFora};{jogo.Resultado}";
+            string linha = $"{jogo.IdJogo};{jogo.IdClubeCasa};{jogo.IdClubeFora};{jogo.Dia};{jogo.Hora};{jogo.Estadio};{jogo.IdJornada};{jogo.GolosClubeCasa};{jogo.GolosClubeFora};{jogo.Resultado};{jogo.JogoJogado}";
 
             StreamWriter sw = new StreamWriter(ficheiro, true);
 
@@ -45,7 +45,7 @@ namespace Biblioteca
                 jogo.GolosClubeCasa = golosEquipaCasa;
                 jogo.GolosClubeFora = golosEquipaFora;
 
-                linhaa = $"{jogo.IdJogo};{jogo.IdClubeCasa};{jogo.IdClubeFora};{jogo.Dia};{jogo.Hora};{jogo.Estadio};{jogo.IdJornada};{jogo.GolosClubeCasa};{jogo.GolosClubeFora};{jogo.Resultado}";
+                linhaa = $"{jogo.IdJogo};{jogo.IdClubeCasa};{jogo.IdClubeFora};{jogo.Dia};{jogo.Hora};{jogo.Estadio};{jogo.IdJornada};{jogo.GolosClubeCasa};{jogo.GolosClubeFora};{jogo.Resultado};{jogo.JogoJogado}";
 
                 texto = texto.Replace(linha, linhaa);
                 File.WriteAllText(ficheiro, texto);
@@ -1177,13 +1177,6 @@ namespace Biblioteca
                 jornada2++;
 
             } while (max2 != 32);
-
-            //Adicionar o resultado a zeros
-            for (int i = 0; i < voltas1.Count; i++)
-            {
-                voltas1[i] = voltas1[i] + ";" + 0 + ";" + 0 + ";" + 0 + ":" + 0;
-                voltas2[i] = voltas2[i] + ";" + 0 + ";" + 0 + ";" + 0 + ":" + 0;
-            }
         }
 
         /// <summary>
@@ -1313,6 +1306,7 @@ namespace Biblioteca
                     dadosJogo.IdJornada = campos[6];
                     dadosJogo.GolosClubeCasa = Convert.ToInt32(campos[7]);
                     dadosJogo.GolosClubeFora = Convert.ToInt32(campos[8]);
+                    dadosJogo.JogoJogado = Convert.ToBoolean(campos[10]);
 
                     Jogos.Add(dadosJogo);
                 }
@@ -1321,6 +1315,29 @@ namespace Biblioteca
             }
 
             return Jogos;
+        }
+
+        public void GerarResultados(DadosJornada dadosJornada, DadosJogo dadosJogo, List<DadosJogo> Jogos, string idJornada)
+        {
+            Random rng = new Random();
+            int casa;
+            int fora;
+
+            for (int i = 0; i < dadosJornada.Jornadas.Count; i++)
+            {
+                foreach (var jogos in Jogos)
+                {
+                    if (jogos.ToString().Contains(idJornada) && jogos.JogoJogado == false)
+                    {
+                        casa = rng.Next(0, 6);
+                        fora = rng.Next(0, 6);
+
+                        jogos.GolosClubeCasa = casa;
+                        jogos.GolosClubeFora = fora;
+                        jogos.JogoJogado = true;
+                    }
+                }
+            }
         }
     }
 }

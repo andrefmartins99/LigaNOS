@@ -18,17 +18,15 @@ namespace Biblioteca
             {
                 if (jogos.ToString().Contains(IdJornada))
                 {
-                    var campos = jogos.ToString().Split(';');
-
                     dadosJornada = new DadosJornada();
 
                     dadosJornada.IdJornada = IdJornada;
-                    dadosJornada.NomeClubeCasa = campos[1];
-                    dadosJornada.NomeClubeFora = campos[2];
-                    dadosJornada.Dia = Convert.ToDateTime(campos[3]);
-                    dadosJornada.Hora = Convert.ToDateTime(campos[4]);
-                    dadosJornada.GolosClubeCasa = Convert.ToInt32(campos[7]);
-                    dadosJornada.GolosClubeFora = Convert.ToInt32(campos[8]);
+                    dadosJornada.NomeClubeCasa = jogos.NomeClubeCasa;
+                    dadosJornada.NomeClubeFora = jogos.NomeClubeFora;
+                    dadosJornada.Dia = jogos.Dia;
+                    dadosJornada.Hora = jogos.Hora;
+                    dadosJornada.GolosClubeCasa = jogos.GolosClubeCasa;
+                    dadosJornada.GolosClubeFora = jogos.GolosClubeFora;
 
                     Jornadas.Add(dadosJornada);
                 }

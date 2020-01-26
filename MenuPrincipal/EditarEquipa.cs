@@ -107,7 +107,7 @@ namespace MenuPrincipal
 
             for (int i = 0; repetido != true && i < Clubes.Count; i++)
             {
-                var campos = Clubes[i].ToString().Split(',');
+                var campos = Clubes[i].ToString().Split(';');
                 string id = campos[0];
                 string nome = campos[1];
                 string treinador = campos[2];

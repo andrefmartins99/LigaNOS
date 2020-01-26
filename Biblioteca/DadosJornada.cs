@@ -29,10 +29,5 @@ namespace Biblioteca
         }
 
         public List<DadosJornada> Jornadas { get; set; }
-
-        public override string ToString()
-        {
-            return $"{NomeClubeCasa};{NomeClubeFora};{Dia.ToString("dd MMM").ToUpper()};{Hora.ToShortTimeString()};{Resultado}";
-        }
     }
 }

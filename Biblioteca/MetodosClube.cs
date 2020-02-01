@@ -80,41 +80,6 @@ namespace Biblioteca
         }
 
         /// <summary>
-        /// Atualizar a estatística do clube após o jogo
-        /// </summary>
-        /// <param name="nome"></param>
-        /// <param name="pontos"></param>
-        /// <param name="numJogos"></param>
-        /// <param name="numVitorias"></param>
-        /// <param name="numDerrotas"></param>
-        /// <param name="numEmpates"></param>
-        /// <param name="golosMarcados"></param>
-        /// <param name="golosSofridos"></param>
-        public void AtualizarEstatisticaClube(DadosClube dadosClube, string nome, int pontos, int numJogos, int numVitorias, int numDerrotas, int numEmpates, int golosMarcados, int golosSofridos)
-        {
-            string ficheiro = "estatisticaClube.txt";
-            string linha = File.ReadAllLines(ficheiro).LastOrDefault(linhas => linhas.StartsWith(nome));
-            string texto = File.ReadAllText(ficheiro);
-            string linhaa;
-
-            if (linha != null)
-            {
-                dadosClube.Pontos += pontos;
-                dadosClube.NumJogos += numJogos;
-                dadosClube.NumVitorias += numVitorias;
-                dadosClube.NumDerrotas += numDerrotas;
-                dadosClube.NumEmpates += numEmpates;
-                dadosClube.GolosMarcados += golosMarcados;
-                dadosClube.GolosSofridos += golosSofridos;
-
-                linhaa = $"{dadosClube.Nome};{dadosClube.Pontos};{dadosClube.NumJogos};{dadosClube.NumVitorias};{dadosClube.NumDerrotas};{dadosClube.NumEmpates};{dadosClube.GolosMarcados};{dadosClube.GolosSofridos};{dadosClube.DiferencaGolos}";
-
-                texto = texto.Replace(linha, linhaa);
-                File.WriteAllText(ficheiro, texto);
-            }
-        }
-
-        /// <summary>
         /// Apagar os ficheiros que contêm a informação e a estatística dos clubes
         /// </summary>
         public void ApagarClube()
@@ -148,7 +113,7 @@ namespace Biblioteca
         public void AtualizarListaClubes(List<DadosClube> Clubes, DadosClube dadosClube)
         {
             dadosClube = new DadosClube();
-            
+
             for (int i = 0; i < Clubes.Count; i++)
             {
                 dadosClube = Clubes[i];
@@ -158,6 +123,50 @@ namespace Biblioteca
                 dadosClube.Estadio = dadosClube.Estadio;
 
                 Clubes[i] = dadosClube;
+            }
+        }
+
+        public void vitoriaClube(DadosClube dadosClube, string clubeCasa, int golosMarcados, int golosSofridos)
+        {
+            foreach (var clube in dadosClube.Clubes)
+            {
+                if (clube.Nome == clubeCasa)
+                {
+                    clube.NumJogos++;
+                    clube.NumVitorias++;
+                    clube.Pontos += 3;
+                    clube.GolosMarcados += golosMarcados;
+                    clube.GolosSofridos += golosSofridos;
+                }
+            }
+        }
+
+        public void derrotaClube(DadosClube dadosClube, string clubeCasa, int golosMarcados, int golosSofridos)
+        {
+            foreach (var clube in dadosClube.Clubes)
+            {
+                if (clube.Nome == clubeCasa)
+                {
+                    clube.NumJogos++;
+                    clube.NumDerrotas++;
+                    clube.GolosMarcados += golosMarcados;
+                    clube.GolosSofridos += golosSofridos;
+                }
+            }
+        }
+
+        public void empateClube(DadosClube dadosClube, string clubeCasa, int golosMarcados, int golosSofridos)
+        {
+            foreach (var clube in dadosClube.Clubes)
+            {
+                if (clube.Nome == clubeCasa)
+                {
+                    clube.NumJogos++;
+                    clube.NumEmpates++;
+                    clube.Pontos += 1;
+                    clube.GolosMarcados += golosMarcados;
+                    clube.GolosSofridos += golosSofridos;
+                }
             }
         }
     }

@@ -163,8 +163,10 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnGuardar);
             this.Controls.Add(this.btnCancelar);
+            this.MaximumSize = new System.Drawing.Size(501, 365);
             this.Name = "EditarEquipa";
             this.Text = "EditarEquipa";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EditarEquipa_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

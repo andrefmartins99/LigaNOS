@@ -184,6 +184,10 @@ namespace MenuPrincipal
             cbJornadas.Visible = true;
             btnMostrarClassificacao.Visible = true;
             btnGerarResultados.Visible = true;
+            btnInfo1.Visible = true;
+            btnInfo2.Visible = true;
+            btnInfo3.Visible = true;
+            btnInfo4.Visible = true;
 
             dadosJogo.Jogos = metodosJogo.CriarJogosCampeonato(dadosJogo.Jogos, dadosJogo, dadosClube.Clubes);
             PreencherComboBoxJornadas();
@@ -208,9 +212,14 @@ namespace MenuPrincipal
                 cbJornadas.Visible = true;
                 btnMostrarClassificacao.Visible = true;
                 btnGerarResultados.Visible = true;
+                btnInfo1.Visible = true;
+                btnInfo2.Visible = true;
+                btnInfo3.Visible = true;
+                btnInfo4.Visible = true;
 
+                finalizarCampeonato();
                 PreencherComboBoxJornadas();
-                cbJornadas.SelectedIndex = 0;
+                cbJornadas.SelectedItem = iniciarJornadaCorreta();
             }
         }
 
@@ -255,6 +264,7 @@ namespace MenuPrincipal
         private void cbJornadas_SelectedIndexChanged(object sender, EventArgs e)
         {
             PreencherDataGridViewJornadas(cbJornadas.SelectedItem.ToString());
+            estadoBtnGerarResultados();
         }
 
         private void btnMostrarClassificacao_Click(object sender, EventArgs e)
@@ -264,21 +274,115 @@ namespace MenuPrincipal
             btnMostrarClassificacao.Enabled = false;
             btnGerarResultados.Enabled = false;
             cbJornadas.Enabled = false;
-            dgvJornadas.Enabled = false;
+            btnInfo1.Enabled = false;
+            btnInfo2.Enabled = false;
+            btnInfo3.Enabled = false;
+            btnInfo4.Enabled = false;
+            btnFinalizar.Enabled = false;
         }
 
         public void EstadoBtnVoltar()
         {
             btnMostrarClassificacao.Enabled = true;
             cbJornadas.Enabled = true;
-            dgvJornadas.Enabled = true;
             btnGerarResultados.Enabled = true;
+            btnInfo1.Enabled = true;
+            btnInfo2.Enabled = true;
+            btnInfo3.Enabled = true;
+            btnInfo4.Enabled = true;
+            btnFinalizar.Enabled = true;
+            estadoBtnGerarResultados();
         }
 
         private void btnGerarResultados_Click(object sender, EventArgs e)
         {
-            metodosJogo.GerarResultados(dadosJornada, dadosJogo, dadosJogo.Jogos, cbJornadas.SelectedItem.ToString());
+            metodosJogo.GerarResultados(dadosJornada, dadosJogo, dadosJogo.Jogos, cbJornadas.SelectedItem.ToString(), metodosClube, dadosClube);
             PreencherDataGridViewJornadas(cbJornadas.SelectedItem.ToString());
+            btnGerarResultados.Enabled = false;
+            finalizarCampeonato();
+        }
+
+        private void btnInfo1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show($"Data: {dadosJornada.Jornadas[0].Dia.ToShortDateString()} {dadosJornada.Jornadas[0].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {dadosJornada.Jornadas[0].NomeClubeCasa}" + Environment.NewLine + $"Clube Fora: {dadosJornada.Jornadas[0].NomeClubeFora}" + Environment.NewLine + $"Estádio: {dadosJornada.Jornadas[0].Estadio}" + Environment.NewLine + $"Resultado: {dadosJornada.Jornadas[0].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnInfo2_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show($"Data: {dadosJornada.Jornadas[1].Dia.ToShortDateString()} {dadosJornada.Jornadas[1].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {dadosJornada.Jornadas[1].NomeClubeCasa}" + Environment.NewLine + $"Clube Fora: {dadosJornada.Jornadas[1].NomeClubeFora}" + Environment.NewLine + $"Estádio: {dadosJornada.Jornadas[1].Estadio}" + Environment.NewLine + $"Resultado: {dadosJornada.Jornadas[1].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnInfo3_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show($"Data: {dadosJornada.Jornadas[2].Dia.ToShortDateString()} {dadosJornada.Jornadas[2].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {dadosJornada.Jornadas[2].NomeClubeCasa}" + Environment.NewLine + $"Clube Fora: {dadosJornada.Jornadas[2].NomeClubeFora}" + Environment.NewLine + $"Estádio: {dadosJornada.Jornadas[2].Estadio}" + Environment.NewLine + $"Resultado: {dadosJornada.Jornadas[2].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnInfo4_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show($"Data: {dadosJornada.Jornadas[3].Dia.ToShortDateString()} {dadosJornada.Jornadas[3].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {dadosJornada.Jornadas[3].NomeClubeCasa}" + Environment.NewLine + $"Clube Fora: {dadosJornada.Jornadas[3].NomeClubeFora}" + Environment.NewLine + $"Estádio: {dadosJornada.Jornadas[3].Estadio}" + Environment.NewLine + $"Resultado: {dadosJornada.Jornadas[3].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void MenuPrincipal_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+        }
+
+        public void estadoBtnGerarResultados()
+        {
+            foreach (var jornada in dadosJornada.Jornadas)
+            {
+                if (jornada.IdJornada == verificarIdJornada(dadosClube.Clubes[0].NumJogos))
+                {
+                    btnGerarResultados.Enabled = true;
+                }
+                else
+                {
+                    btnGerarResultados.Enabled = false;
+                }
+            }
+        }
+
+        public string verificarIdJornada(int numJogos)
+        {
+            if (numJogos < 9)
+            {
+                return $"J0{numJogos + 1}";
+            }
+            else
+            {
+                return $"J{numJogos + 1}";
+            }
+        }
+
+        public void finalizarCampeonato()
+        {
+            if (dadosClube.Clubes[0].NumJogos == 14)
+            {
+                btnFinalizar.Visible = true;
+            }
+            else
+            {
+                btnFinalizar.Visible = false;
+            }
+        }
+
+        public string iniciarJornadaCorreta()
+        {
+            foreach (var jogos in dadosJogo.Jogos)
+            {
+                if (jogos.JogoJogado == false)
+                {
+                    return jogos.IdJornada;
+                }
+            }
+
+            return 0.ToString();
+        }
+
+        private void btnFinalizar_Click(object sender, EventArgs e)
+        {
+            Campeao campeao = new Campeao(this, dadosClube.Clubes);
+            campeao.Show();
         }
     }
 }

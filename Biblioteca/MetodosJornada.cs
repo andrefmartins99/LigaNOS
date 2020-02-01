@@ -27,6 +27,7 @@ namespace Biblioteca
                     dadosJornada.Hora = jogos.Hora;
                     dadosJornada.GolosClubeCasa = jogos.GolosClubeCasa;
                     dadosJornada.GolosClubeFora = jogos.GolosClubeFora;
+                    dadosJornada.Estadio = jogos.Estadio;
 
                     Jornadas.Add(dadosJornada);
                 }

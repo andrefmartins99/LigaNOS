@@ -122,5 +122,10 @@ namespace MenuPrincipal
             }
             return repetido;
         }
+
+        private void CriarEquipa_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            form.EstadobtnCriar();
+        }
     }
 }

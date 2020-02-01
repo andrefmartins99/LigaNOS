@@ -28,31 +28,6 @@ namespace Biblioteca
         }
 
         /// <summary>
-        /// Atualizar a info do jogo
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="golosEquipaCasa"></param>
-        /// <param name="golosEquipaFora"></param>
-        public void AtualizarInfoJogo(DadosJogo jogo, int id, int golosEquipaCasa, int golosEquipaFora)
-        {
-            string ficheiro = "jogoInfo.txt";
-            string linha = File.ReadAllLines(ficheiro).LastOrDefault(linhas => linhas.StartsWith(id.ToString()));
-            string texto = File.ReadAllText(ficheiro);
-            string linhaa;
-
-            if (linha != null)
-            {
-                jogo.GolosClubeCasa = golosEquipaCasa;
-                jogo.GolosClubeFora = golosEquipaFora;
-
-                linhaa = $"{jogo.IdJogo};{jogo.IdClubeCasa};{jogo.IdClubeFora};{jogo.Dia};{jogo.Hora};{jogo.Estadio};{jogo.IdJornada};{jogo.GolosClubeCasa};{jogo.GolosClubeFora};{jogo.Resultado};{jogo.JogoJogado}";
-
-                texto = texto.Replace(linha, linhaa);
-                File.WriteAllText(ficheiro, texto);
-            }
-        }
-
-        /// <summary>
         /// Apagar o ficheiro que contém a informação dos jogos 
         /// </summary>
         public void ApagarInfoJogo()
@@ -1317,7 +1292,7 @@ namespace Biblioteca
             return Jogos;
         }
 
-        public void GerarResultados(DadosJornada dadosJornada, DadosJogo dadosJogo, List<DadosJogo> Jogos, string idJornada)
+        public void GerarResultados(DadosJornada dadosJornada, DadosJogo dadosJogo, List<DadosJogo> Jogos, string idJornada, MetodosClube metodosClube, DadosClube dadosClube)
         {
             Random rng = new Random();
             int casa;
@@ -1335,6 +1310,22 @@ namespace Biblioteca
                         jogos.GolosClubeCasa = casa;
                         jogos.GolosClubeFora = fora;
                         jogos.JogoJogado = true;
+
+                        if (casa > fora)
+                        {
+                            metodosClube.vitoriaClube(dadosClube, jogos.NomeClubeCasa, jogos.GolosClubeCasa, jogos.GolosClubeFora);
+                            metodosClube.derrotaClube(dadosClube, jogos.NomeClubeFora, jogos.GolosClubeFora, jogos.GolosClubeCasa);
+                        }
+                        else if (casa < fora)
+                        {
+                            metodosClube.vitoriaClube(dadosClube, jogos.NomeClubeFora, jogos.GolosClubeFora, jogos.GolosClubeCasa);
+                            metodosClube.derrotaClube(dadosClube, jogos.NomeClubeCasa, jogos.GolosClubeCasa, jogos.GolosClubeFora);
+                        }
+                        else
+                        {
+                            metodosClube.empateClube(dadosClube, jogos.NomeClubeCasa, jogos.GolosClubeCasa, jogos.GolosClubeFora);
+                            metodosClube.empateClube(dadosClube, jogos.NomeClubeFora, jogos.GolosClubeFora, jogos.GolosClubeCasa);
+                        }
                     }
                 }
             }

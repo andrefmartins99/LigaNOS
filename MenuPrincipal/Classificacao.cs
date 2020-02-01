@@ -26,7 +26,7 @@ namespace MenuPrincipal
             Clubes = clubes;
             metodosClassificacao = new MetodosClassificacao();
             dadosClassificacao = new DadosClassificacao();
-            dadosClassificacao.Classificacoes = metodosClassificacao.PreencherListaClassificacoes(clubes, dadosClassificacao.Classificacoes, dadosClassificacao);
+            dadosClassificacao.Classificacoes = metodosClassificacao.PreencherListaClassificacoes(Clubes, dadosClassificacao.Classificacoes, dadosClassificacao);
             PreencherDataGridViewClassificacao();
         }
 
@@ -48,6 +48,11 @@ namespace MenuPrincipal
         {
             form.EstadoBtnVoltar();
             this.Close();
+        }
+
+        private void Classificacao_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            form.EstadoBtnVoltar();
         }
     }
 }

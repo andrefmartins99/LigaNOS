@@ -139,8 +139,10 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Margin = new System.Windows.Forms.Padding(4);
+            this.MaximumSize = new System.Drawing.Size(447, 325);
             this.Name = "CriarEquipa";
             this.Text = "CriarEquipa";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CriarEquipa_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

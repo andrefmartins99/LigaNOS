@@ -124,5 +124,10 @@ namespace MenuPrincipal
 
             return repetido;
         }
+
+        private void EditarEquipa_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            form.EstadobtnEditar();
+        }
     }
 }

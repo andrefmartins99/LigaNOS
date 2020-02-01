@@ -28,6 +28,8 @@ namespace Biblioteca
             }
         }
 
+        public string Estadio { get; set; }
+
         public List<DadosJornada> Jornadas { get; set; }
     }
 }

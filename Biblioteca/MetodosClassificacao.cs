@@ -28,7 +28,7 @@ namespace Biblioteca
                 Classificacoes.Add(dadosClassificacao);
             }
 
-            OrdenarListaClassificacoes(Classificacoes);
+            Classificacoes = OrdenarListaClassificacoes(Classificacoes);
 
             return Classificacoes;
         }
@@ -36,9 +36,9 @@ namespace Biblioteca
         /// <summary>
         /// Ordenar a lista Classificacoes de acordo com as estatísticas dos clubes
         /// </summary>
-        public void OrdenarListaClassificacoes(List<DadosClassificacao> Classificacoes)
+        public List<DadosClassificacao> OrdenarListaClassificacoes(List<DadosClassificacao> Classificacoes)
         {
-            Classificacoes.OrderByDescending(x => x.Pontos).ThenBy(x => x.DiferencaGolos).ThenBy(x => x.NumVitorias).ThenBy(x => x.GolosMarcados);
+            return Classificacoes.OrderByDescending(x => x.Pontos).ThenByDescending(x => x.DiferencaGolos).ThenByDescending(x => x.NumVitorias).ThenByDescending(x => x.GolosMarcados).ToList();
         }
     }
 }

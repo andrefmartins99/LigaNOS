@@ -85,6 +85,7 @@ namespace MenuPrincipal
             btnApagarClube.Enabled = false;
             btnEditarClube.Enabled = false;
             listBoxClubes.Enabled = false;
+            btnAmigavel.Enabled = false;
         }
 
         //Mudar o estado dos botões quando se sai do form criar clube
@@ -94,6 +95,7 @@ namespace MenuPrincipal
             btnApagarClube.Enabled = true;
             btnEditarClube.Enabled = true;
             listBoxClubes.Enabled = true;
+            btnAmigavel.Enabled = true;
         }
 
         //Mudar o estado dos botões quando se sai do form editar clube
@@ -104,6 +106,7 @@ namespace MenuPrincipal
             btnApagarClube.Enabled = true;
             listBoxClubes.Enabled = true;
             btnComecar.Enabled = true;
+            btnAmigavel.Enabled = true;
         }
 
         //Apagar um clube
@@ -168,6 +171,7 @@ namespace MenuPrincipal
                     btnApagarClube.Enabled = false;
                     listBoxClubes.Enabled = false;
                     btnComecar.Enabled = false;
+                    btnAmigavel.Enabled = false;
                 }
             }
             else
@@ -290,6 +294,7 @@ namespace MenuPrincipal
             btnInfo3.Enabled = false;
             btnInfo4.Enabled = false;
             btnFinalizar.Enabled = false;
+            btnAmigavel.Enabled = false;
         }
 
         //Mudar o estado dos botões quando se sai do form classificacao
@@ -303,6 +308,7 @@ namespace MenuPrincipal
             btnInfo3.Enabled = true;
             btnInfo4.Enabled = true;
             btnFinalizar.Enabled = true;
+            btnAmigavel.Enabled = true;
             EstadoBtnGerarResultados();
         }
 
@@ -412,8 +418,7 @@ namespace MenuPrincipal
             btnInfo4.Enabled = false;
             btnFinalizar.Enabled = false;
             cbJornadas.Enabled = false;
-
-
+            btnAmigavel.Enabled = false;
         }
 
         //Mudar estado dos botões quando se sai do form campeao
@@ -426,6 +431,7 @@ namespace MenuPrincipal
             btnInfo4.Enabled = true;
             btnFinalizar.Enabled = true;
             cbJornadas.Enabled = true;
+            btnAmigavel.Enabled = true;
         }
 
         //Apagar os ficheiros xml que contêm a informação dos clubes e dos jogos e limpar as listas Clubes e Jogos

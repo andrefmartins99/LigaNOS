@@ -33,6 +33,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MenuPrincipal));
             this.lblclubeInfo = new System.Windows.Forms.Label();
             this.btnCriarClube = new System.Windows.Forms.Button();
             this.listBoxClubes = new System.Windows.Forms.ListBox();
@@ -341,6 +342,7 @@
             this.Controls.Add(this.listBoxClubes);
             this.Controls.Add(this.btnCriarClube);
             this.Controls.Add(this.lblclubeInfo);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MaximumSize = new System.Drawing.Size(1225, 704);
             this.Name = "MenuPrincipal";

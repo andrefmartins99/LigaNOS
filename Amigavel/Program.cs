@@ -29,7 +29,7 @@ namespace Amigavel
                     letra = char.IsLetter(clube[i]);
                 }
 
-            } while (!(letra == true));
+            } while (!(letra == true && !(string.IsNullOrEmpty(clube))));
 
             do
             {
@@ -42,7 +42,7 @@ namespace Amigavel
                     letra = char.IsLetter(adversario[i]);
                 }
 
-            } while (!(letra == true && adversario != clube));
+            } while (!(letra == true && adversario != clube && !(string.IsNullOrEmpty(adversario))));
 
             Console.Clear();
 

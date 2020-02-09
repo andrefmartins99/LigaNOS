@@ -197,6 +197,7 @@ namespace MenuPrincipal
             btnInfo2.Visible = true;
             btnInfo3.Visible = true;
             btnInfo4.Visible = true;
+
             dadosClube.Clubes = VerificarResetClubes();
 
             dadosJogo.Jogos = metodosJogo.CriarJogosCampeonato(dadosJogo.Jogos, dadosJogo, dadosClube.Clubes);

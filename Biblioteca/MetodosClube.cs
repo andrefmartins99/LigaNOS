@@ -1,100 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Xml.Serialization;
 
 namespace Biblioteca
 {
     public class MetodosClube
     {
-        /// <summary>
-        /// Ler ficheiro dos clubes e criar uma lista para saber quantos clubes foram criados
-        /// </summary>
-        public List<DadosClube> LerFicheiroClubes(List<DadosClube> Clubes, DadosClube dadosClube)
+        //Procurar ficheiro xml clubeInfo, se não existir cria-se um novo ficheiro, se existir a lista Clubes vai ser preenchida com a informação que estiver contida no ficheiro
+        public List<DadosClube> LerFicheiroClubes(DadosClube dadosClube)
         {
-            string ficheiro = "clubeInfo.txt";
-            Clubes = new List<DadosClube>();
-
-            StreamReader sr;
-
-            if (File.Exists(ficheiro))
-            {
-                sr = File.OpenText(ficheiro);
-
-                string linha = string.Empty;
-
-                while ((linha = sr.ReadLine()) != null)
-                {
-                    var campos = linha.Split(';');
-
-                    dadosClube = new DadosClube();
-
-                    dadosClube.IdClube = campos[0];
-                    dadosClube.Nome = campos[1];
-                    dadosClube.Treinador = campos[2];
-                    dadosClube.Estadio = campos[3];
-
-
-                    Clubes.Add(dadosClube);
-                }
-
-                sr.Close();
-            }
-
-            return Clubes;
-        }
-
-        /// <summary>
-        /// Gravar os clubes e as suas estatísticas num ficheiro de texto
-        /// </summary>
-        public void GravarClube(DadosClube dadosClube)
-        {
-            //Info do clube
-            string ficheiro = "clubeInfo.txt";
-            string linha = $"{dadosClube.IdClube};{dadosClube.Nome};{dadosClube.Treinador};{dadosClube.Estadio}";
-
-            StreamWriter sw = new StreamWriter(ficheiro, true);
+            dadosClube.Clubes = new List<DadosClube>();
+            string ficheiro = "clubeInfo.xml";
 
             if (!File.Exists(ficheiro))
             {
-                sw = File.CreateText(ficheiro);
+                GravarClube(dadosClube);
             }
 
-            sw.WriteLine(linha);
-            sw.Close();
-
-            //Estatística do clube
-            string ficheiros = "estatisticaClube.txt";
-            string linhas = $"{dadosClube.Nome};{dadosClube.Pontos};{dadosClube.NumJogos};{dadosClube.NumVitorias};{dadosClube.NumDerrotas};{dadosClube.NumEmpates};{dadosClube.GolosMarcados};{dadosClube.GolosSofridos};{dadosClube.DiferencaGolos}";
-
-            StreamWriter sws = new StreamWriter(ficheiros, true);
-
-            if (!File.Exists(ficheiros))
+            if (new FileInfo(ficheiro).Length == 0)
             {
-                sw = File.CreateText(ficheiros);
+                GravarClube(dadosClube);
             }
 
-            sw.WriteLine(linhas);
+            XmlSerializer serial = new XmlSerializer(typeof(List<DadosClube>));
+            StreamReader sr = new StreamReader(ficheiro);
+            dadosClube.Clubes = (List<DadosClube>)(serial.Deserialize(sr));
+            sr.Close();
+            return dadosClube.Clubes;
+        }
+
+        //Gravar informação da lista Clubes no ficheiro xml clubeInfo
+        public void GravarClube(DadosClube dadosClube)
+        {
+            string ficheiro = "clubeInfo.xml";
+            XmlSerializer serial = new XmlSerializer(typeof(List<DadosClube>));
+            StreamWriter sw = new StreamWriter(ficheiro);
+            serial.Serialize(sw, dadosClube.Clubes);
             sw.Close();
         }
 
-        /// <summary>
-        /// Apagar os ficheiros que contêm a informação e a estatística dos clubes
-        /// </summary>
+        //Apagar o ficheiro xml clubeInfo
         public void ApagarClube()
         {
-            string ficheiro = "clubeInfo.txt";
-            string ficheiros = "estatisticaClube.txt";
+            string ficheiro = "clubeInfo.xml";
             File.Delete(ficheiro);
-            File.Delete(ficheiros);
         }
 
-        /// <summary>
-        /// Gerar o Id do clube a ser criado
-        /// </summary>
-        /// <param name="Clubes"></param>
-        /// <returns></returns>
+        //Gerar Id do clube a ser criado
         public string GerarIdClube(List<DadosClube> Clubes)
         {
             int id = Clubes.Count;
@@ -105,15 +57,9 @@ namespace Biblioteca
             return idClube;
         }
 
-        /// <summary>
-        /// Atualizar a lista Clubes após um clube ser apagado
-        /// </summary>
-        /// <param name="Clubes"></param>
-        /// <param name="dadosClube"></param>
+        //Atualizar, se necessário, o Id dos clubes após um ser eliminado
         public void AtualizarListaClubes(List<DadosClube> Clubes, DadosClube dadosClube)
         {
-            dadosClube = new DadosClube();
-
             for (int i = 0; i < Clubes.Count; i++)
             {
                 dadosClube = Clubes[i];
@@ -126,7 +72,8 @@ namespace Biblioteca
             }
         }
 
-        public void vitoriaClube(DadosClube dadosClube, string clubeCasa, int golosMarcados, int golosSofridos)
+        //Adicionar ao clube vitorioso 1 jogo jogado, 1 vitória, 3 pontos, os golos marcados e os golos sofridos
+        public void VitoriaClube(DadosClube dadosClube, string clubeCasa, int golosMarcados, int golosSofridos)
         {
             foreach (var clube in dadosClube.Clubes)
             {
@@ -141,7 +88,8 @@ namespace Biblioteca
             }
         }
 
-        public void derrotaClube(DadosClube dadosClube, string clubeCasa, int golosMarcados, int golosSofridos)
+        //Adicionar ao clube derrotado 1 jogo jogado, 1 derrota, os golos marcados e os golos sofridos
+        public void DerrotaClube(DadosClube dadosClube, string clubeCasa, int golosMarcados, int golosSofridos)
         {
             foreach (var clube in dadosClube.Clubes)
             {
@@ -155,7 +103,8 @@ namespace Biblioteca
             }
         }
 
-        public void empateClube(DadosClube dadosClube, string clubeCasa, int golosMarcados, int golosSofridos)
+        //Adicionar aos clubes que empataram 1 jogo jogado, 1 empate, 1 ponto, os golos marcados e os golos sofridos
+        public void EmpateClube(DadosClube dadosClube, string clubeCasa, int golosMarcados, int golosSofridos)
         {
             foreach (var clube in dadosClube.Clubes)
             {
@@ -168,6 +117,23 @@ namespace Biblioteca
                     clube.GolosSofridos += golosSofridos;
                 }
             }
+        }
+
+        //Dar reset às estatísticas dos clubes
+        public List<DadosClube> ResetClubes(DadosClube dadosClube)
+        {
+            foreach (var clube in dadosClube.Clubes)
+            {
+                clube.Pontos = 0;
+                clube.NumJogos = 0;
+                clube.NumVitorias = 0;
+                clube.NumDerrotas = 0;
+                clube.NumEmpates = 0;
+                clube.GolosMarcados = 0;
+                clube.GolosSofridos = 0;
+            }
+
+            return dadosClube.Clubes;
         }
     }
 }

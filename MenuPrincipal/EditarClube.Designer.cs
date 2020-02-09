@@ -1,6 +1,6 @@
 ﻿namespace MenuPrincipal
 {
-    partial class EditarEquipa
+    partial class EditarClube
     {
         /// <summary>
         /// Required designer variable.
@@ -148,7 +148,7 @@
             this.txtId.Size = new System.Drawing.Size(262, 28);
             this.txtId.TabIndex = 17;
             // 
-            // EditarEquipa
+            // EditarClube
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -164,8 +164,8 @@
             this.Controls.Add(this.btnGuardar);
             this.Controls.Add(this.btnCancelar);
             this.MaximumSize = new System.Drawing.Size(501, 365);
-            this.Name = "EditarEquipa";
-            this.Text = "EditarEquipa";
+            this.Name = "EditarClube";
+            this.Text = "EditarClube";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EditarEquipa_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();

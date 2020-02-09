@@ -1,13 +1,9 @@
-﻿using System;
+﻿using Biblioteca;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
-using Biblioteca;
 
 namespace MenuPrincipal
 {
@@ -35,12 +31,14 @@ namespace MenuPrincipal
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            dadosClube.Clubes = metodosClube.LerFicheiroClubes(dadosClube.Clubes, dadosClube);
+            dadosClube.Clubes = metodosClube.LerFicheiroClubes(dadosClube);
+            metodosClube.AtualizarListaClubes(dadosClube.Clubes, dadosClube);
             VerificarClubes();
-            dadosJogo.Jogos = metodosJogo.LerFicheiroJogos(dadosJogo.Jogos, dadosJogo);
-            verificarJogos();
+            dadosJogo.Jogos = metodosJogo.LerFicheiroJogos(dadosJogo);
+            VerificarJogos();
         }
 
+        //Verificar se foram criados os 8 clubes
         public void VerificarClubes()
         {
             contaCLubes = dadosClube.Clubes.Count;
@@ -70,6 +68,7 @@ namespace MenuPrincipal
             }
         }
 
+        //Preencher listBox com a lista Clubes
         public void PreencherListBoxClubes()
         {
             listBoxClubes.DataSource = null;
@@ -77,16 +76,18 @@ namespace MenuPrincipal
             listBoxClubes.ClearSelected();
         }
 
+        //Criar um clube
         private void btnCriarClube_Click(object sender, EventArgs e)
         {
-            CriarEquipa criarEquipa = new CriarEquipa(this, dadosClube.Clubes);
-            criarEquipa.Show();
+            CriarClube criarClube = new CriarClube(this, dadosClube.Clubes);
+            criarClube.Show();
             btnCriarClube.Enabled = false;
             btnApagarClube.Enabled = false;
             btnEditarClube.Enabled = false;
             listBoxClubes.Enabled = false;
         }
 
+        //Mudar o estado dos botões quando se sai do form criar clube
         public void EstadobtnCriar()
         {
             btnCriarClube.Enabled = true;
@@ -95,6 +96,7 @@ namespace MenuPrincipal
             listBoxClubes.Enabled = true;
         }
 
+        //Mudar o estado dos botões quando se sai do form editar clube
         public void EstadobtnEditar()
         {
             btnEditarClube.Enabled = true;
@@ -104,6 +106,7 @@ namespace MenuPrincipal
             btnComecar.Enabled = true;
         }
 
+        //Apagar um clube
         private void btnApagarClube_Click(object sender, EventArgs e)
         {
             DadosClube clubeAApagar = (DadosClube)listBoxClubes.SelectedItem;
@@ -140,6 +143,7 @@ namespace MenuPrincipal
             }
         }
 
+        //Editar um clube
         private void btnEditarClube_Click(object sender, EventArgs e)
         {
             DadosClube ClubeAEditar = (DadosClube)listBoxClubes.SelectedItem;
@@ -157,8 +161,8 @@ namespace MenuPrincipal
 
                 if (editado != null)
                 {
-                    EditarEquipa editarEquipa = new EditarEquipa(this, editado, dadosClube.Clubes);
-                    editarEquipa.Show();
+                    EditarClube editarClube = new EditarClube(this, editado, dadosClube.Clubes);
+                    editarClube.Show();
                     btnEditarClube.Enabled = false;
                     btnCriarClube.Enabled = false;
                     btnApagarClube.Enabled = false;
@@ -172,6 +176,7 @@ namespace MenuPrincipal
             }
         }
 
+        //Iniciar campeonato
         private void btnComecar_Click(object sender, EventArgs e)
         {
             listBoxClubes.Visible = false;
@@ -188,17 +193,19 @@ namespace MenuPrincipal
             btnInfo2.Visible = true;
             btnInfo3.Visible = true;
             btnInfo4.Visible = true;
+            dadosClube.Clubes = VerificarResetClubes();
 
             dadosJogo.Jogos = metodosJogo.CriarJogosCampeonato(dadosJogo.Jogos, dadosJogo, dadosClube.Clubes);
             PreencherComboBoxJornadas();
             cbJornadas.SelectedIndex = 0;
         }
 
-        public void verificarJogos()
+        //Verificar se o campeonato já foi iniciado
+        public void VerificarJogos()
         {
             contaJogos = dadosJogo.Jogos.Count;
 
-            if (contaJogos == 56)
+            if (contaJogos == 56 && contaCLubes == 8)
             {
                 listBoxClubes.Visible = false;
                 lblclubeInfo.Visible = false;
@@ -217,12 +224,13 @@ namespace MenuPrincipal
                 btnInfo3.Visible = true;
                 btnInfo4.Visible = true;
 
-                finalizarCampeonato();
+                FinalizarCampeonato();
                 PreencherComboBoxJornadas();
-                cbJornadas.SelectedItem = iniciarJornadaCorreta();
+                cbJornadas.SelectedItem = IniciarJornadaCorreta();
             }
         }
 
+        //Preencher dataGridViewJornadas com a list Jornadas
         public void PreencherDataGridViewJornadas(string id)
         {
             dadosJornada.Jornadas = metodosJornada.PreencherListaJornadas(dadosJornada.Jornadas, dadosJornada, dadosJogo.Jogos, id);
@@ -239,6 +247,7 @@ namespace MenuPrincipal
             dgvJornadas.ClearSelection();
         }
 
+        //Preencher comboBox com os ids das jornadas
         public void PreencherComboBoxJornadas()
         {
             for (int i = 0; i < dadosJogo.Jogos.Count; i++)
@@ -261,12 +270,14 @@ namespace MenuPrincipal
             }
         }
 
+        //Ajustar o estado do botão gerarResultados de acordo com a jornada selecionada na comboBox
         private void cbJornadas_SelectedIndexChanged(object sender, EventArgs e)
         {
             PreencherDataGridViewJornadas(cbJornadas.SelectedItem.ToString());
-            estadoBtnGerarResultados();
+            EstadoBtnGerarResultados();
         }
 
+        //Mostrar classificação
         private void btnMostrarClassificacao_Click(object sender, EventArgs e)
         {
             Classificacao classificacao = new Classificacao(this, dadosClube.Clubes);
@@ -281,6 +292,7 @@ namespace MenuPrincipal
             btnFinalizar.Enabled = false;
         }
 
+        //Mudar o estado dos botões quando se sai do form classificacao
         public void EstadoBtnVoltar()
         {
             btnMostrarClassificacao.Enabled = true;
@@ -291,7 +303,7 @@ namespace MenuPrincipal
             btnInfo3.Enabled = true;
             btnInfo4.Enabled = true;
             btnFinalizar.Enabled = true;
-            estadoBtnGerarResultados();
+            EstadoBtnGerarResultados();
         }
 
         private void btnGerarResultados_Click(object sender, EventArgs e)
@@ -299,39 +311,46 @@ namespace MenuPrincipal
             metodosJogo.GerarResultados(dadosJornada, dadosJogo, dadosJogo.Jogos, cbJornadas.SelectedItem.ToString(), metodosClube, dadosClube);
             PreencherDataGridViewJornadas(cbJornadas.SelectedItem.ToString());
             btnGerarResultados.Enabled = false;
-            finalizarCampeonato();
+            FinalizarCampeonato();
         }
 
+        //Mostrar informação sobre o 1º jogo da jornada
         private void btnInfo1_Click(object sender, EventArgs e)
         {
             MessageBox.Show($"Data: {dadosJornada.Jornadas[0].Dia.ToShortDateString()} {dadosJornada.Jornadas[0].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {dadosJornada.Jornadas[0].NomeClubeCasa}" + Environment.NewLine + $"Clube Fora: {dadosJornada.Jornadas[0].NomeClubeFora}" + Environment.NewLine + $"Estádio: {dadosJornada.Jornadas[0].Estadio}" + Environment.NewLine + $"Resultado: {dadosJornada.Jornadas[0].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        //Mostrar informação sobre o 2º jogo da jornada
         private void btnInfo2_Click(object sender, EventArgs e)
         {
             MessageBox.Show($"Data: {dadosJornada.Jornadas[1].Dia.ToShortDateString()} {dadosJornada.Jornadas[1].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {dadosJornada.Jornadas[1].NomeClubeCasa}" + Environment.NewLine + $"Clube Fora: {dadosJornada.Jornadas[1].NomeClubeFora}" + Environment.NewLine + $"Estádio: {dadosJornada.Jornadas[1].Estadio}" + Environment.NewLine + $"Resultado: {dadosJornada.Jornadas[1].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        //Mostrar informação sobre o 3º jogo da jornada
         private void btnInfo3_Click(object sender, EventArgs e)
         {
             MessageBox.Show($"Data: {dadosJornada.Jornadas[2].Dia.ToShortDateString()} {dadosJornada.Jornadas[2].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {dadosJornada.Jornadas[2].NomeClubeCasa}" + Environment.NewLine + $"Clube Fora: {dadosJornada.Jornadas[2].NomeClubeFora}" + Environment.NewLine + $"Estádio: {dadosJornada.Jornadas[2].Estadio}" + Environment.NewLine + $"Resultado: {dadosJornada.Jornadas[2].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        //Mostrar informação sobre o 4º jogo da jornada
         private void btnInfo4_Click(object sender, EventArgs e)
         {
             MessageBox.Show($"Data: {dadosJornada.Jornadas[3].Dia.ToShortDateString()} {dadosJornada.Jornadas[3].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {dadosJornada.Jornadas[3].NomeClubeCasa}" + Environment.NewLine + $"Clube Fora: {dadosJornada.Jornadas[3].NomeClubeFora}" + Environment.NewLine + $"Estádio: {dadosJornada.Jornadas[3].Estadio}" + Environment.NewLine + $"Resultado: {dadosJornada.Jornadas[3].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        //Gravar os clubes e os jogos quando se fecha o programa
         private void MenuPrincipal_FormClosing(object sender, FormClosingEventArgs e)
         {
-
+            metodosClube.GravarClube(dadosClube);
+            metodosJogo.GravarInfoJogo(dadosJogo);
         }
 
-        public void estadoBtnGerarResultados()
+        //Mudar o estado do botão gerarResultados dependendo da jornada selecionada na comboBox e o número de jornadas jogadas pelos clubes
+        public void EstadoBtnGerarResultados()
         {
             foreach (var jornada in dadosJornada.Jornadas)
             {
-                if (jornada.IdJornada == verificarIdJornada(dadosClube.Clubes[0].NumJogos))
+                if (jornada.IdJornada == VerificarIdJornada(dadosClube.Clubes[0].NumJogos))
                 {
                     btnGerarResultados.Enabled = true;
                 }
@@ -342,7 +361,7 @@ namespace MenuPrincipal
             }
         }
 
-        public string verificarIdJornada(int numJogos)
+        public string VerificarIdJornada(int numJogos)
         {
             if (numJogos < 9)
             {
@@ -354,7 +373,8 @@ namespace MenuPrincipal
             }
         }
 
-        public void finalizarCampeonato()
+        //Mudar o estado do botão finalizar de acordo com as jornadas jogadas
+        public void FinalizarCampeonato()
         {
             if (dadosClube.Clubes[0].NumJogos == 14)
             {
@@ -366,7 +386,8 @@ namespace MenuPrincipal
             }
         }
 
-        public string iniciarJornadaCorreta()
+        //Iniciar o programa na jornada correta se o campeonato já tiver começado
+        public string IniciarJornadaCorreta()
         {
             foreach (var jogos in dadosJogo.Jogos)
             {
@@ -376,13 +397,82 @@ namespace MenuPrincipal
                 }
             }
 
-            return 0.ToString();
+            return "J14";
         }
 
+        //Mostrar o campeão do campeonato
         private void btnFinalizar_Click(object sender, EventArgs e)
         {
             Campeao campeao = new Campeao(this, dadosClube.Clubes);
             campeao.Show();
+            btnMostrarClassificacao.Enabled = false;
+            btnInfo1.Enabled = false;
+            btnInfo2.Enabled = false;
+            btnInfo3.Enabled = false;
+            btnInfo4.Enabled = false;
+            btnFinalizar.Enabled = false;
+            cbJornadas.Enabled = false;
+
+
+        }
+
+        //Mudar estado dos botões quando se sai do form campeao
+        public void NaoFinalizar()
+        {
+            btnMostrarClassificacao.Enabled = true;
+            btnInfo1.Enabled = true;
+            btnInfo2.Enabled = true;
+            btnInfo3.Enabled = true;
+            btnInfo4.Enabled = true;
+            btnFinalizar.Enabled = true;
+            cbJornadas.Enabled = true;
+        }
+
+        //Apagar os ficheiros xml que contêm a informação dos clubes e dos jogos e limpar as listas Clubes e Jogos
+        public void ApagarClubesJogosJornadas()
+        {
+            metodosClube.ApagarClube();
+            metodosJogo.ApagarInfoJogo();
+            dadosClube.Clubes.Clear();
+            dadosJogo.Jogos.Clear();
+        }
+
+        //Dar reset às estatísticas dos clubes
+        public List<DadosClube> VerificarResetClubes()
+        {
+            for (int i = 0; i < dadosClube.Clubes.Count; i++)
+            {
+                if (dadosClube.Clubes[i].NumJogos != 0)
+                {
+                    dadosClube.Clubes = metodosClube.ResetClubes(dadosClube);
+                    return dadosClube.Clubes;
+                }
+            }
+
+            return dadosClube.Clubes;
+        }
+
+        private void btnAmigavel_Click(object sender, EventArgs e)
+        {
+            var consola = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "C:/Users/André/source/repos/CET/C#/UFCD 5412/LigaNOS/Amigavel/obj/Debug/Amigavel.exe"
+                }
+            };
+
+            if (File.Exists("C:/Users/André/source/repos/CET/C#/UFCD 5412/LigaNOS/Amigavel/obj/Debug/Amigavel.exe"))
+            {
+                consola.Start();
+                this.Enabled = false;
+                consola.WaitForExit();
+                this.Enabled = true;
+            }
+            else
+            {
+                MessageBox.Show("Ficheiro não existe", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

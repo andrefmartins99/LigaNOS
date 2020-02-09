@@ -58,17 +58,17 @@
     <Compile Include="Classificacao.Designer.cs">
       <DependentUpon>Classificacao.cs</DependentUpon>
     </Compile>
-    <Compile Include="CriarEquipa.cs">
+    <Compile Include="CriarClube.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CriarEquipa.Designer.cs">
-      <DependentUpon>CriarEquipa.cs</DependentUpon>
+    <Compile Include="CriarClube.Designer.cs">
+      <DependentUpon>CriarClube.cs</DependentUpon>
     </Compile>
-    <Compile Include="EditarEquipa.cs">
+    <Compile Include="EditarClube.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EditarEquipa.Designer.cs">
-      <DependentUpon>EditarEquipa.cs</DependentUpon>
+    <Compile Include="EditarClube.Designer.cs">
+      <DependentUpon>EditarClube.cs</DependentUpon>
     </Compile>
     <Compile Include="MenuPrincipal.cs">
       <SubType>Form</SubType>
@@ -84,11 +84,11 @@
     <EmbeddedResource Include="Classificacao.resx">
       <DependentUpon>Classificacao.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CriarEquipa.resx">
-      <DependentUpon>CriarEquipa.cs</DependentUpon>
+    <EmbeddedResource Include="CriarClube.resx">
+      <DependentUpon>CriarClube.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EditarEquipa.resx">
-      <DependentUpon>EditarEquipa.cs</DependentUpon>
+    <EmbeddedResource Include="EditarClube.resx">
+      <DependentUpon>EditarClube.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MenuPrincipal.resx">
       <DependentUpon>MenuPrincipal.cs</DependentUpon>
@@ -103,6 +103,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="Properties\DataSources\Biblioteca.DadosClassificacao.datasource" />
+    <None Include="Properties\DataSources\Biblioteca.DadosClube.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -117,6 +118,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Amigavel\Amigavel.csproj">
+      <Project>{673c4520-2284-4abd-beb6-601e4dc0f083}</Project>
+      <Name>Amigavel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Biblioteca\Biblioteca.csproj">
       <Project>{bef0a1f8-6b36-47b3-82bc-ac5596795677}</Project>
       <Name>Biblioteca</Name>

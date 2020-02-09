@@ -1,6 +1,6 @@
 ﻿namespace MenuPrincipal
 {
-    partial class CriarEquipa
+    partial class CriarClube
     {
         /// <summary>
         /// Required designer variable.
@@ -125,7 +125,7 @@
             this.btnCancelar.UseVisualStyleBackColor = true;
             this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
             // 
-            // CriarEquipa
+            // CriarClube
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -140,8 +140,8 @@
             this.Controls.Add(this.label1);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximumSize = new System.Drawing.Size(447, 325);
-            this.Name = "CriarEquipa";
-            this.Text = "CriarEquipa";
+            this.Name = "CriarClube";
+            this.Text = "CriarClube";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CriarEquipa_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();

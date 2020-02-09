@@ -1,13 +1,7 @@
-﻿using System;
+﻿using Biblioteca;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Biblioteca;
 
 namespace MenuPrincipal
 {
@@ -30,6 +24,7 @@ namespace MenuPrincipal
             PreencherDataGridViewClassificacao();
         }
 
+        //Preencher as linhas da datagridview com as estatísticas dos clubes
         public void PreencherDataGridViewClassificacao()
         {
 

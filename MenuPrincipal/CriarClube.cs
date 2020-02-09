@@ -1,25 +1,19 @@
-﻿using System;
+﻿using Biblioteca;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Biblioteca;
 
 
 namespace MenuPrincipal
 {
-    public partial class CriarEquipa : Form
+    public partial class CriarClube : Form
     {
         List<DadosClube> Clubes;
         DadosClube dadosClube;
         MetodosClube metodosClube;
         MenuPrincipal form;
 
-        public CriarEquipa(MenuPrincipal Form, List<DadosClube> clubes)
+        public CriarClube(MenuPrincipal Form, List<DadosClube> clubes)
         {
             InitializeComponent();
             form = Form;
@@ -33,6 +27,7 @@ namespace MenuPrincipal
             this.Close();
         }
 
+        //Verificar se caracteres são apenas inseridas letras ou espaços
         private void txtNome_TextChanged(object sender, EventArgs e)
         {
             for (int i = 0; i < txtNome.TextLength; i++)
@@ -44,6 +39,7 @@ namespace MenuPrincipal
             }
         }
 
+        //Verificar se caracteres são apenas inseridas letras ou espaços
         private void txtTreinador_TextChanged(object sender, EventArgs e)
         {
             for (int i = 0; i < txtTreinador.TextLength; i++)
@@ -55,6 +51,7 @@ namespace MenuPrincipal
             }
         }
 
+        //Verificar se caracteres são apenas inseridas letras ou espaços
         private void txtEstadio_TextChanged(object sender, EventArgs e)
         {
             for (int i = 0; i < txtEstadio.TextLength; i++)
@@ -68,6 +65,7 @@ namespace MenuPrincipal
 
         private void btnCriar_Click(object sender, EventArgs e)
         {
+            //Verificar se os campos a preencher estão vazios
             if (string.IsNullOrEmpty(txtNome.Text) || string.IsNullOrEmpty(txtTreinador.Text) || string.IsNullOrEmpty(txtEstadio.Text))
             {
                 MessageBox.Show($"Tem de preencher todos os campos!!!", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -79,6 +77,7 @@ namespace MenuPrincipal
             string treinadores = txtTreinador.Text.Trim();
             string estadios = txtEstadio.Text.Trim();
 
+            //Verificar se a informação inserida já existe na lista Clubes
             if (VerificarCaixas(nomes, treinadores, estadios) == true)
             {
                 MessageBox.Show("Nome, Treinador ou Estádio inserido já existe no campenonato, por favor introduza outro!!!", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -104,6 +103,7 @@ namespace MenuPrincipal
             this.Close();
         }
 
+        //Verificar se a informação inserida já existe na lista Clubes
         public bool VerificarCaixas(string nomes, string treinadores, string estadios)
         {
             bool repetido = false;

@@ -1,45 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Xml.Serialization;
 
 namespace Biblioteca
 {
     public class MetodosJogo
     {
-        /// <summary>
-        /// Gravar os jogos num ficheiro de texto
-        /// </summary>
-        public void GravarInfoJogo(DadosJogo jogo)
+        //Gravar informações da lista Jogos no ficheiro xml jogoInfo
+        public void GravarInfoJogo(DadosJogo dadosJogo)
         {
-            string ficheiro = "jogoInfo.txt";
-            string linha = $"{jogo.IdJogo};{jogo.IdClubeCasa};{jogo.IdClubeFora};{jogo.Dia};{jogo.Hora};{jogo.Estadio};{jogo.IdJornada};{jogo.GolosClubeCasa};{jogo.GolosClubeFora};{jogo.Resultado};{jogo.JogoJogado}";
-
-            StreamWriter sw = new StreamWriter(ficheiro, true);
-
-            if (!File.Exists(ficheiro))
-            {
-                sw = File.CreateText(ficheiro);
-            }
-
-            sw.WriteLine(linha);
+            string ficheiro = "jogoInfo.xml";
+            XmlSerializer serial = new XmlSerializer(typeof(List<DadosJogo>));
+            StreamWriter sw = new StreamWriter(ficheiro);
+            serial.Serialize(sw, dadosJogo.Jogos);
             sw.Close();
         }
 
-        /// <summary>
-        /// Apagar o ficheiro que contém a informação dos jogos 
-        /// </summary>
+        //Apagar ficheiro xml jogoInfo
         public void ApagarInfoJogo()
         {
-            string ficheiro = "jogoInfo.txt";
+            string ficheiro = "jogoInfo.xml";
             File.Delete(ficheiro);
         }
 
-        /// <summary>
-        /// Gerar os jogos do campeonato, com as respetivas informações (data, estadio)
-        /// </summary>
-        /// <param name="Clubes"></param>
+        //Gerar todos os jogos do campeonato
         public List<DadosJogo> CriarJogosCampeonato(List<DadosJogo> Jogos, DadosJogo dadosJogo, List<DadosClube> Clubes)
         {
             Jogos = new List<DadosJogo>();
@@ -50,6 +35,7 @@ namespace Biblioteca
             Random rng = new Random();
             int rnd;
 
+            //Retirar os ids dos clubes criados da lista Clubes
             for (int i = 0; i < Clubes.Count; i++)
             {
                 var campos = Clubes[i].ToString().Split(';');
@@ -57,7 +43,7 @@ namespace Biblioteca
                 clubes.Add(id);
             }
 
-            //Gerar os jogos do campeonato
+            //Gerar jogos
             do
             {
                 for (int i = 0; i < clubes.Count - 1; i++)
@@ -88,7 +74,7 @@ namespace Biblioteca
                             }
                             else
                             {
-                                //Verificação de equipas repetidas na jornada
+                                //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 0; l < voltas1.Count; l++)
                                 {
                                     var clube = voltas1[l].Split(';');
@@ -126,7 +112,7 @@ namespace Biblioteca
                         //2º Jornada
                         else if (voltas1.Count <= 7)
                         {
-                            //Verificação de jogos anteriores realizados em casa ou fora
+                            //Verificar se os clubes jogaram em casa ou fora na jornada anterior
                             int contadorCasa1 = 0;
                             int contadorCasa2 = 0;
                             int contadorFora1 = 0;
@@ -169,7 +155,8 @@ namespace Biblioteca
                             //1º Jogo da Jornada
                             if (voltas1.Count == 4)
                             {
-                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))) //Verificação de equipas repetidas em todas as jornadas
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
+                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}")))
                                 {
                                     if (rnd > 5)
                                     {
@@ -187,7 +174,7 @@ namespace Biblioteca
                             }
                             else
                             {
-                                //Verificação de equipas repetidas na jornada
+                                //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 4; l < voltas1.Count; l++)
                                 {
                                     var clube = voltas1[l].Split(';');
@@ -205,6 +192,7 @@ namespace Biblioteca
                                     }
                                 }
 
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
                                 if (contador == 0 && (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))))
                                 {
                                     if (rnd > 5)
@@ -225,7 +213,7 @@ namespace Biblioteca
                         //3º Jornada
                         else if (voltas1.Count <= 11)
                         {
-                            //Verificação de jogos anteriores realizados em casa ou fora
+                            //Verificar se os clubes jogaram em casa ou fora na jornada anterior
                             int contadorCasa1 = 0;
                             int contadorCasa2 = 0;
                             int contadorFora1 = 0;
@@ -268,7 +256,8 @@ namespace Biblioteca
                             //1º Jogo da Jornada
                             if (voltas1.Count == 8)
                             {
-                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))) //Verificação de equipas repetidas em todas as jornadas
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
+                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}")))
                                 {
                                     if (rnd > 5)
                                     {
@@ -286,7 +275,7 @@ namespace Biblioteca
                             }
                             else
                             {
-                                //Verificação de equipas repetidas na jornada
+                                //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 8; l < voltas1.Count; l++)
                                 {
                                     var clube = voltas1[l].Split(';');
@@ -304,6 +293,7 @@ namespace Biblioteca
                                     }
                                 }
 
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
                                 if (contador == 0 && (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))))
                                 {
                                     if (rnd > 5)
@@ -324,7 +314,7 @@ namespace Biblioteca
                         //4º Jornada
                         else if (voltas1.Count <= 15)
                         {
-                            //Verificação de jogos anteriores realizados em casa ou fora
+                            //Verificar se os clubes jogaram em casa ou fora na jornada anterior
                             int contadorCasa1 = 0;
                             int contadorCasa2 = 0;
                             int contadorFora1 = 0;
@@ -367,7 +357,8 @@ namespace Biblioteca
                             //1º Jogo da Jornada
                             if (voltas1.Count == 12)
                             {
-                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))) //Verificação de equipas repetidas em todas as jornadas
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
+                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}")))
                                 {
                                     if (rnd > 5)
                                     {
@@ -385,7 +376,7 @@ namespace Biblioteca
                             }
                             else
                             {
-                                //Verificação de equipas repetidas na jornada
+                                //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 12; l < voltas1.Count; l++)
                                 {
                                     var clube = voltas1[l].Split(';');
@@ -403,6 +394,7 @@ namespace Biblioteca
                                     }
                                 }
 
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
                                 if (contador == 0 && (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))))
                                 {
                                     if (rnd > 5)
@@ -423,7 +415,7 @@ namespace Biblioteca
                         //5º Jornada
                         else if (voltas1.Count <= 19)
                         {
-                            //Verificação de jogos anteriores realizados em casa ou fora
+                            //Verificar se os clubes jogaram em casa ou fora na jornada anterior
                             int contadorCasa1 = 0;
                             int contadorCasa2 = 0;
                             int contadorFora1 = 0;
@@ -466,7 +458,8 @@ namespace Biblioteca
                             //1º Jogo da Jornada
                             if (voltas1.Count == 16)
                             {
-                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))) //Verificação de equipas repetidas em todas as jornadas
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
+                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}")))
                                 {
                                     if (rnd > 5)
                                     {
@@ -484,7 +477,7 @@ namespace Biblioteca
                             }
                             else
                             {
-                                //Verificação de equipas repetidas na jornada
+                                //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 16; l < voltas1.Count; l++)
                                 {
                                     var clube = voltas1[l].Split(';');
@@ -502,6 +495,7 @@ namespace Biblioteca
                                     }
                                 }
 
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
                                 if (contador == 0 && (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))))
                                 {
                                     if (rnd > 5)
@@ -522,7 +516,7 @@ namespace Biblioteca
                         //6º Jornada
                         else if (voltas1.Count <= 23)
                         {
-                            //Verificação de jogos anteriores realizados em casa ou fora
+                            //Verificar se os clubes jogaram em casa ou fora na jornada anterior
                             int contadorCasa1 = 0;
                             int contadorCasa2 = 0;
                             int contadorFora1 = 0;
@@ -565,7 +559,8 @@ namespace Biblioteca
                             //1º Jogo da Jornada
                             if (voltas1.Count == 20)
                             {
-                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))) //Verificação de equipas repetidas em todas as jornadas
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
+                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}")))
                                 {
                                     if (rnd > 5)
                                     {
@@ -583,7 +578,7 @@ namespace Biblioteca
                             }
                             else
                             {
-                                //Verificação de equipas repetidas na jornada
+                                //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 20; l < voltas1.Count; l++)
                                 {
                                     var clube = voltas1[l].Split(';');
@@ -601,6 +596,7 @@ namespace Biblioteca
                                     }
                                 }
 
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
                                 if (contador == 0 && (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))))
                                 {
                                     if (rnd > 5)
@@ -621,7 +617,7 @@ namespace Biblioteca
                         //7º Jornada
                         else
                         {
-                            //Verificação de jogos anteriores realizados em casa ou fora
+                            //Verificar se os clubes jogaram em casa ou fora na jornada anterior
                             int contadorCasa1 = 0;
                             int contadorCasa2 = 0;
                             int contadorFora1 = 0;
@@ -664,7 +660,8 @@ namespace Biblioteca
                             //1º Jogo da Jornada
                             if (voltas1.Count == 24)
                             {
-                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))) //Verificação de equipas repetidas em todas as jornadas
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
+                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}")))
                                 {
                                     if (rnd > 5)
                                     {
@@ -682,7 +679,7 @@ namespace Biblioteca
                             }
                             else
                             {
-                                //Verificação de equipas repetidas na jornada
+                                //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 24; l < voltas1.Count; l++)
                                 {
                                     var clube = voltas1[l].Split(';');
@@ -700,6 +697,7 @@ namespace Biblioteca
                                     }
                                 }
 
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
                                 if (contador == 0 && (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))))
                                 {
                                     if (rnd > 5)
@@ -734,12 +732,7 @@ namespace Biblioteca
             return Jogos;
         }
 
-        /// <summary>
-        /// Adicionar à informação do jogo o nome das equipas
-        /// </summary>
-        /// <param name="voltas1"></param>
-        /// <param name="voltas2"></param>
-        /// <param name="Clubes"></param>
+        //Identificar os nomes dos clubes através do seu id e adicionar às listas voltas1 e voltas2
         public void NomeClubes(List<string> voltas1, List<string> voltas2, List<DadosClube> Clubes)
         {
             //Clubes que jogam em casa
@@ -807,10 +800,7 @@ namespace Biblioteca
             }
         }
 
-        /// <summary>
-        /// Gerar as datas dos jogos da primeira volta
-        /// </summary>
-        /// <param name="voltas1"></param>
+        //Adicionar a data dos jogos da primeria volta
         public void DataVolta1(List<string> voltas1)
         {
             //(ano, mes, dia, horas, minutos, segundos)
@@ -883,10 +873,7 @@ namespace Biblioteca
             } while (tamanhoi != 28);
         }
 
-        /// <summary>
-        /// Gerar as datas dos jogos da segunda volta
-        /// </summary>
-        /// <param name="voltas2"></param>
+        //Adicionar a data dos jogos da segunda volta
         public void DataVolta2(List<string> voltas2)
         {
             DateTime data1 = new DateTime(2020, 4, 18, 15, 0, 0);
@@ -958,10 +945,7 @@ namespace Biblioteca
             } while (tamanhoi != 28);
         }
 
-        /// <summary>
-        /// Ordenar a lista da primeira volta de acordo com a data dos jogos
-        /// </summary>
-        /// <param name="voltas1"></param>
+        //Ordenar a lista da primera volta pela data dos jogos
         public void OrdenarListaVoltas1(List<string> voltas1)
         {
             int min = 0;
@@ -1008,10 +992,7 @@ namespace Biblioteca
             } while (max != 32);
         }
 
-        /// <summary>
-        /// Ordenar a lista da segunda volta de acordo com a data dos jogos
-        /// </summary>
-        /// <param name="voltas2"></param>
+        //Ordenar a lista da segunda volta pela data dos jogos
         public void OrdenarListaVoltas2(List<string> voltas2)
         {
             int min = 0;
@@ -1058,12 +1039,7 @@ namespace Biblioteca
             } while (max != 32);
         }
 
-        /// <summary>
-        /// Adicionar à informação do jogo o estádio da equipa que joga em casa
-        /// </summary>
-        /// <param name="voltas1"></param>
-        /// <param name="voltas2"></param>
-        /// <param name="Clubes"></param>
+        //Adicionar aos jogos o nome do estádio do clube que joga em casa
         public void EstadioVoltas(List<string> voltas1, List<string> voltas2, List<DadosClube> Clubes)
         {
             for (int i = 0; i < Clubes.Count; i++)
@@ -1098,11 +1074,7 @@ namespace Biblioteca
             }
         }
 
-        /// <summary>
-        /// Adicionar aos jogos o número do jogo, número da jornada e o resultado a zeros
-        /// </summary>
-        /// <param name="voltas1"></param>
-        /// <param name="voltas2"></param>
+        //Criar e adicionar aos jogos o número de id do jogo e o número do id da jornada
         public void FinalizarVoltas(List<string> voltas1, List<string> voltas2)
         {
             //Adicionar o número dos jogos da primeira volta
@@ -1154,11 +1126,7 @@ namespace Biblioteca
             } while (max2 != 32);
         }
 
-        /// <summary>
-        /// Criar o número do jogo
-        /// </summary>
-        /// <param name="i"></param>
-        /// <returns></returns>
+        //Criar o id do jogo
         public string CriarIdJogoVoltas(int i)
         {
             string idJogo;
@@ -1175,11 +1143,7 @@ namespace Biblioteca
             return idJogo;
         }
 
-        /// <summary>
-        /// Criar o número da jornada
-        /// </summary>
-        /// <param name="jornada"></param>
-        /// <returns></returns>
+        //Criar o id da jornada
         public string CriarIdJornadaVoltas(int jornada)
         {
             string idJornada;
@@ -1196,18 +1160,12 @@ namespace Biblioteca
             return idJornada;
         }
 
-        /// <summary>
-        /// Preencher a lista Jogos com os jogos do campeonato
-        /// </summary>
-        /// <param name="Jogos"></param>
-        /// <param name="dadosJogo"></param>
-        /// <param name="voltas1"></param>
-        /// <param name="voltas2"></param>
-        /// <returns></returns>
+        //Preencher a lista Jogos a partir das lista voltas1 e voltas2
         public List<DadosJogo> PreencherListaJogos(List<DadosJogo> Jogos, DadosJogo dadosJogo, List<string> voltas1, List<string> voltas2)
         {
             Jogos = new List<DadosJogo>();
 
+            //Primeira volta
             for (int i = 0; i < voltas1.Count; i++)
             {
                 var campos = voltas1[i].Split(';');
@@ -1223,12 +1181,11 @@ namespace Biblioteca
                 dadosJogo.Hora = Convert.ToDateTime(campos[6]);
                 dadosJogo.Estadio = campos[7];
                 dadosJogo.IdJornada = campos[8];
-                dadosJogo.GolosClubeCasa = Convert.ToInt32(campos[9]);
-                dadosJogo.GolosClubeFora = Convert.ToInt32(campos[10]);
 
                 Jogos.Add(dadosJogo);
             }
 
+            //Segunda volta
             for (int i = 0; i < voltas2.Count; i++)
             {
                 var campos = voltas2[i].Split(';');
@@ -1244,8 +1201,6 @@ namespace Biblioteca
                 dadosJogo.Hora = Convert.ToDateTime(campos[6]);
                 dadosJogo.Estadio = campos[7];
                 dadosJogo.IdJornada = campos[8];
-                dadosJogo.GolosClubeCasa = Convert.ToInt32(campos[9]);
-                dadosJogo.GolosClubeFora = Convert.ToInt32(campos[10]);
 
                 Jogos.Add(dadosJogo);
             }
@@ -1253,45 +1208,30 @@ namespace Biblioteca
             return Jogos;
         }
 
-        public List<DadosJogo> LerFicheiroJogos(List<DadosJogo> Jogos, DadosJogo dadosJogo)
+        //Procurar ficheiro xml jogoInfo, se não existir cria-se um novo ficheiro, se existir a lista Jogos vai ser preenchida com a informação que estiver contida no ficheiro
+        public List<DadosJogo> LerFicheiroJogos(DadosJogo dadosJogo)
         {
-            string ficheiro = "jogoInfo.txt";
-            Jogos = new List<DadosJogo>();
+            dadosJogo.Jogos = new List<DadosJogo>();
+            string ficheiro = "jogoInfo.xml";
 
-            StreamReader sr;
-
-            if (File.Exists(ficheiro))
+            if (!File.Exists(ficheiro))
             {
-                sr = File.OpenText(ficheiro);
-
-                string linha = string.Empty;
-
-                while ((linha = sr.ReadLine()) != null)
-                {
-                    var campos = linha.Split(';');
-
-                    dadosJogo = new DadosJogo();
-
-                    dadosJogo.IdJogo = campos[0];
-                    dadosJogo.NomeClubeCasa = campos[1];
-                    dadosJogo.NomeClubeFora = campos[2];
-                    dadosJogo.Dia = Convert.ToDateTime(campos[3]);
-                    dadosJogo.Hora = Convert.ToDateTime(campos[4]);
-                    dadosJogo.Estadio = campos[5];
-                    dadosJogo.IdJornada = campos[6];
-                    dadosJogo.GolosClubeCasa = Convert.ToInt32(campos[7]);
-                    dadosJogo.GolosClubeFora = Convert.ToInt32(campos[8]);
-                    dadosJogo.JogoJogado = Convert.ToBoolean(campos[10]);
-
-                    Jogos.Add(dadosJogo);
-                }
-
-                sr.Close();
+                GravarInfoJogo(dadosJogo);
             }
 
-            return Jogos;
+            if (new FileInfo(ficheiro).Length == 0)
+            {
+                GravarInfoJogo(dadosJogo);
+            }
+
+            XmlSerializer serial = new XmlSerializer(typeof(List<DadosJogo>));
+            StreamReader sr = new StreamReader(ficheiro);
+            dadosJogo.Jogos = (List<DadosJogo>)(serial.Deserialize(sr));
+            sr.Close();
+            return dadosJogo.Jogos;
         }
 
+        //Gerar resultados da jornada selecionada na comboBox
         public void GerarResultados(DadosJornada dadosJornada, DadosJogo dadosJogo, List<DadosJogo> Jogos, string idJornada, MetodosClube metodosClube, DadosClube dadosClube)
         {
             Random rng = new Random();
@@ -1302,6 +1242,7 @@ namespace Biblioteca
             {
                 foreach (var jogos in Jogos)
                 {
+                    //Verificar se o jogo já foi jogado
                     if (jogos.ToString().Contains(idJornada) && jogos.JogoJogado == false)
                     {
                         casa = rng.Next(0, 6);
@@ -1311,20 +1252,21 @@ namespace Biblioteca
                         jogos.GolosClubeFora = fora;
                         jogos.JogoJogado = true;
 
+                        //Atualizar as estatísticas dos clubes após o jogo ser jogado
                         if (casa > fora)
                         {
-                            metodosClube.vitoriaClube(dadosClube, jogos.NomeClubeCasa, jogos.GolosClubeCasa, jogos.GolosClubeFora);
-                            metodosClube.derrotaClube(dadosClube, jogos.NomeClubeFora, jogos.GolosClubeFora, jogos.GolosClubeCasa);
+                            metodosClube.VitoriaClube(dadosClube, jogos.NomeClubeCasa, jogos.GolosClubeCasa, jogos.GolosClubeFora);
+                            metodosClube.DerrotaClube(dadosClube, jogos.NomeClubeFora, jogos.GolosClubeFora, jogos.GolosClubeCasa);
                         }
                         else if (casa < fora)
                         {
-                            metodosClube.vitoriaClube(dadosClube, jogos.NomeClubeFora, jogos.GolosClubeFora, jogos.GolosClubeCasa);
-                            metodosClube.derrotaClube(dadosClube, jogos.NomeClubeCasa, jogos.GolosClubeCasa, jogos.GolosClubeFora);
+                            metodosClube.VitoriaClube(dadosClube, jogos.NomeClubeFora, jogos.GolosClubeFora, jogos.GolosClubeCasa);
+                            metodosClube.DerrotaClube(dadosClube, jogos.NomeClubeCasa, jogos.GolosClubeCasa, jogos.GolosClubeFora);
                         }
                         else
                         {
-                            metodosClube.empateClube(dadosClube, jogos.NomeClubeCasa, jogos.GolosClubeCasa, jogos.GolosClubeFora);
-                            metodosClube.empateClube(dadosClube, jogos.NomeClubeFora, jogos.GolosClubeFora, jogos.GolosClubeCasa);
+                            metodosClube.EmpateClube(dadosClube, jogos.NomeClubeCasa, jogos.GolosClubeCasa, jogos.GolosClubeFora);
+                            metodosClube.EmpateClube(dadosClube, jogos.NomeClubeFora, jogos.GolosClubeFora, jogos.GolosClubeCasa);
                         }
                     }
                 }

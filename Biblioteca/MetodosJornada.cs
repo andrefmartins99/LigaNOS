@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Biblioteca
 {
     public class MetodosJornada
     {
-        /// <summary>
-        /// Preencher a lista Jornadas com os jogos dessa jornada
-        /// </summary>
+        //Preencher lista Jornadas a partir da lista Jogos dependendo da jornada selecionada na comboBox
         public List<DadosJornada> PreencherListaJornadas(List<DadosJornada> Jornadas, DadosJornada dadosJornada, List<DadosJogo> Jogos, string IdJornada)
         {
             Jornadas = new List<DadosJornada>();
@@ -36,6 +31,7 @@ namespace Biblioteca
             return Jornadas;
         }
 
+        //Retorna o id da jornada de um jogo da lista Jogos
         public string NumeroJornadas(List<DadosJogo> Jogos, DadosJogo dadosJogo, int i)
         {
             string IdJornada;

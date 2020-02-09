@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Biblioteca
 {
     public class MetodosClassificacao
     {
+        //Preencher a lista Classificações a partir da lista Clubes
         public List<DadosClassificacao> PreencherListaClassificacoes(List<DadosClube> Clubes, List<DadosClassificacao> Classificacoes, DadosClassificacao dadosClassificacao)
         {
             Classificacoes = new List<DadosClassificacao>();
@@ -33,9 +31,7 @@ namespace Biblioteca
             return Classificacoes;
         }
 
-        /// <summary>
-        /// Ordenar a lista Classificacoes de acordo com as estatísticas dos clubes
-        /// </summary>
+        //Ordenar a lista Classificações por pontos, diferença de golos, número de vitórias e golos marcados descendentemente
         public List<DadosClassificacao> OrdenarListaClassificacoes(List<DadosClassificacao> Classificacoes)
         {
             return Classificacoes.OrderByDescending(x => x.Pontos).ThenByDescending(x => x.DiferencaGolos).ThenByDescending(x => x.NumVitorias).ThenByDescending(x => x.GolosMarcados).ToList();

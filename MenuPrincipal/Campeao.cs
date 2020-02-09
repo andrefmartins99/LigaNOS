@@ -1,13 +1,7 @@
-﻿using System;
+﻿using Biblioteca;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Biblioteca;
 
 namespace MenuPrincipal
 {
@@ -32,7 +26,20 @@ namespace MenuPrincipal
 
         private void Campeao_FormClosing(object sender, FormClosingEventArgs e)
         {
+            form.NaoFinalizar();
+        }
 
+        private void btnTerminarCampeonato_Click(object sender, EventArgs e)
+        {
+            DialogResult resposta;
+
+            resposta = MessageBox.Show("Ao terminar o campeonato todos os clubes, jogos e jornadas vão ser apagados e o programa vai terminar.", "Terminar campeonato", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+
+            if (resposta == DialogResult.Yes)
+            {
+                form.ApagarClubesJogosJornadas();
+                Application.Exit();
+            }
         }
     }
 }

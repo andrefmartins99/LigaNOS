@@ -18,26 +18,28 @@ namespace Amigavel
             bool letra = true;
             Random rnd = new Random();
 
+            //Nome do teu clube
             do
             {
                 Console.Clear();
                 Console.Write("Insira o nome do seu clube: ");
                 clube = Console.ReadLine().ToUpper();
 
-                for (int i = 0; i < clube.Length; i++)
+                for (int i = 0; i < clube.Length && letra != false; i++)
                 {
                     letra = char.IsLetter(clube[i]);
                 }
 
             } while (!(letra == true && !(string.IsNullOrEmpty(clube))));
 
+            //Nome do clube do teu adversário
             do
             {
                 Console.Clear();
                 Console.Write("Insira o nome do seu adversário: ");
                 adversario = Console.ReadLine().ToUpper();
 
-                for (int i = 0; i < adversario.Length; i++)
+                for (int i = 0; i < adversario.Length && letra != false; i++)
                 {
                     letra = char.IsLetter(adversario[i]);
                 }
@@ -46,6 +48,7 @@ namespace Amigavel
 
             Console.Clear();
 
+            //Escolher formação
             do
             {
                 Console.Clear();
@@ -63,6 +66,7 @@ namespace Amigavel
 
                     Console.WriteLine();
 
+                    //Criar campo
                     for (int i = 0; i <= a; i++)
                     {
                         if (i == 0 || i == a)

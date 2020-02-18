@@ -86,6 +86,7 @@ namespace MenuPrincipal
             btnEditarClube.Enabled = false;
             listBoxClubes.Enabled = false;
             btnAmigavel.Enabled = false;
+            btnInfo.Enabled = false;
         }
 
         //Mudar o estado dos botões quando se sai do form criar clube
@@ -96,6 +97,7 @@ namespace MenuPrincipal
             btnEditarClube.Enabled = true;
             listBoxClubes.Enabled = true;
             btnAmigavel.Enabled = true;
+            btnInfo.Enabled = true;
         }
 
         //Mudar o estado dos botões quando se sai do form editar clube
@@ -107,6 +109,7 @@ namespace MenuPrincipal
             listBoxClubes.Enabled = true;
             btnComecar.Enabled = true;
             btnAmigavel.Enabled = true;
+            btnInfo.Enabled = true;
         }
 
         //Apagar um clube
@@ -172,6 +175,7 @@ namespace MenuPrincipal
                     listBoxClubes.Enabled = false;
                     btnComecar.Enabled = false;
                     btnAmigavel.Enabled = false;
+                    btnInfo.Enabled = false;
                 }
             }
             else
@@ -296,6 +300,7 @@ namespace MenuPrincipal
             btnInfo4.Enabled = false;
             btnFinalizar.Enabled = false;
             btnAmigavel.Enabled = false;
+            btnInfo.Enabled = false;
         }
 
         //Mudar o estado dos botões quando se sai do form classificacao
@@ -310,6 +315,7 @@ namespace MenuPrincipal
             btnInfo4.Enabled = true;
             btnFinalizar.Enabled = true;
             btnAmigavel.Enabled = true;
+            btnInfo.Enabled = true;
             EstadoBtnGerarResultados();
         }
 
@@ -420,6 +426,7 @@ namespace MenuPrincipal
             btnFinalizar.Enabled = false;
             cbJornadas.Enabled = false;
             btnAmigavel.Enabled = false;
+            btnInfo.Enabled = false;
         }
 
         //Mudar estado dos botões quando se sai do form campeao
@@ -433,6 +440,7 @@ namespace MenuPrincipal
             btnFinalizar.Enabled = true;
             cbJornadas.Enabled = true;
             btnAmigavel.Enabled = true;
+            btnInfo.Enabled = true;
         }
 
         //Apagar os ficheiros xml que contêm a informação dos clubes e dos jogos e limpar as listas Clubes e Jogos
@@ -465,11 +473,11 @@ namespace MenuPrincipal
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "C:/Users/André/source/repos/CET/C#/UFCD 5412/LigaNOS/Amigavel/obj/Debug/Amigavel.exe"
+                    FileName = "Amigavel.exe"
                 }
             };
 
-            if (File.Exists("C:/Users/André/source/repos/CET/C#/UFCD 5412/LigaNOS/Amigavel/obj/Debug/Amigavel.exe"))
+            if (File.Exists("Amigavel.exe"))
             {
                 consola.Start();
                 this.Enabled = false;
@@ -480,6 +488,12 @@ namespace MenuPrincipal
             {
                 MessageBox.Show("Ficheiro não existe", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        //Mostrar info
+        private void btnInfo_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show($"Feito por André Martins{Environment.NewLine}Versão 1.3{Environment.NewLine}Data: 15/02/2020", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

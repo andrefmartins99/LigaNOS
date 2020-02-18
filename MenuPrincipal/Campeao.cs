@@ -22,6 +22,12 @@ namespace MenuPrincipal
             dadosClassificacao.Classificacoes = metodosClassificacao.PreencherListaClassificacoes(Clubes, dadosClassificacao.Classificacoes, dadosClassificacao);
 
             lblCampeao.Text = $"Parabéns!!! O campeão é o {dadosClassificacao.Classificacoes[0].Nome}";
+            lblEstatisticaCampeao.Text = $"Pontos: {dadosClassificacao.Classificacoes[0].Pontos}{Environment.NewLine}" +
+                $"Número de vitórias: {dadosClassificacao.Classificacoes[0].NumVitorias}{Environment.NewLine}" +
+                $"Número de derrotas: {dadosClassificacao.Classificacoes[0].NumDerrotas}{Environment.NewLine}" +
+                $"Número de empates: {dadosClassificacao.Classificacoes[0].NumEmpates}{Environment.NewLine}" +
+                $"Golos Marcados / Golos sofridos: {dadosClassificacao.Classificacoes[0].GolosMarcados} / {dadosClassificacao.Classificacoes[0].GolosSofridos}{Environment.NewLine}" +
+                $"Diferença de golos: {dadosClassificacao.Classificacoes[0].DiferencaGolos}";
         }
 
         private void Campeao_FormClosing(object sender, FormClosingEventArgs e)

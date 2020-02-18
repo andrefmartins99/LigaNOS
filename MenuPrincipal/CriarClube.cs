@@ -27,7 +27,7 @@ namespace MenuPrincipal
             this.Close();
         }
 
-        //Verificar se caracteres são apenas inseridas letras ou espaços
+        //Verificar se caracteres inseridos são apenas letras ou espaços
         private void txtNome_TextChanged(object sender, EventArgs e)
         {
             for (int i = 0; i < txtNome.TextLength; i++)
@@ -39,7 +39,7 @@ namespace MenuPrincipal
             }
         }
 
-        //Verificar se caracteres são apenas inseridas letras ou espaços
+        //Verificar se caracteres inseridos são apenas letras ou espaços
         private void txtTreinador_TextChanged(object sender, EventArgs e)
         {
             for (int i = 0; i < txtTreinador.TextLength; i++)
@@ -51,7 +51,7 @@ namespace MenuPrincipal
             }
         }
 
-        //Verificar se caracteres são apenas inseridas letras ou espaços
+        //Verificar se caracteres inseridos são apenas letras ou espaços
         private void txtEstadio_TextChanged(object sender, EventArgs e)
         {
             for (int i = 0; i < txtEstadio.TextLength; i++)

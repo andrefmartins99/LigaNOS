@@ -55,6 +55,7 @@
             this.btnInfo4 = new System.Windows.Forms.Button();
             this.btnFinalizar = new System.Windows.Forms.Button();
             this.btnAmigavel = new System.Windows.Forms.Button();
+            this.btnInfo = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvJornadas)).BeginInit();
             this.SuspendLayout();
             // 
@@ -320,11 +321,24 @@
             this.btnAmigavel.UseVisualStyleBackColor = true;
             this.btnAmigavel.Click += new System.EventHandler(this.btnAmigavel_Click);
             // 
+            // btnInfo
+            // 
+            this.btnInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnInfo.Location = new System.Drawing.Point(13, 617);
+            this.btnInfo.Margin = new System.Windows.Forms.Padding(4);
+            this.btnInfo.Name = "btnInfo";
+            this.btnInfo.Size = new System.Drawing.Size(100, 28);
+            this.btnInfo.TabIndex = 17;
+            this.btnInfo.Text = "Info";
+            this.btnInfo.UseVisualStyleBackColor = true;
+            this.btnInfo.Click += new System.EventHandler(this.btnInfo_Click);
+            // 
             // MenuPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1207, 657);
+            this.Controls.Add(this.btnInfo);
             this.Controls.Add(this.btnAmigavel);
             this.Controls.Add(this.btnFinalizar);
             this.Controls.Add(this.btnInfo4);
@@ -378,6 +392,7 @@
         private System.Windows.Forms.Button btnInfo4;
         private System.Windows.Forms.Button btnFinalizar;
         private System.Windows.Forms.Button btnAmigavel;
+        private System.Windows.Forms.Button btnInfo;
     }
 }
 

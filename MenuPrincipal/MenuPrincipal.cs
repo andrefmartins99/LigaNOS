@@ -9,43 +9,44 @@ namespace MenuPrincipal
 {
     public partial class MenuPrincipal : Form
     {
-        DadosClube dadosClube;
-        MetodosClube metodosClube;
-        DadosJogo dadosJogo;
-        MetodosJogo metodosJogo;
-        DadosJornada dadosJornada;
-        MetodosJornada metodosJornada;
-        int contaCLubes = 0;
-        int contaJogos = 0;
+        public DadosClube DadosClube { get; set; }
+
+        public DadosJogo DadosJogo { get; set; }
+
+        public DadosJornada DadosJornada { get; set; }
+
+        public CriarClube CriarClubeForm { get; set; }
+
+        public EditarClube EditarClubeForm { get; set; }
+
+        public Classificacao ClassificacaoForm { get; set; }
+
+        public Campeao CampeaoForm { get; set; }
 
         public MenuPrincipal()
         {
-            dadosClube = new DadosClube();
-            metodosClube = new MetodosClube();
-            dadosJogo = new DadosJogo();
-            metodosJogo = new MetodosJogo();
-            dadosJornada = new DadosJornada();
-            metodosJornada = new MetodosJornada();
             InitializeComponent();
+            DadosClube = new DadosClube();
+            DadosJogo = new DadosJogo();
+            DadosJornada = new DadosJornada();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            dadosClube.Clubes = metodosClube.LerFicheiroClubes(dadosClube);
-            metodosClube.AtualizarListaClubes(dadosClube.Clubes, dadosClube);
+            DadosClube.Clubes = MetodosClube.LerFicheiroClubes(DadosClube);
+            MetodosClube.AtualizarListaClubes(DadosClube);
             VerificarClubes();
-            dadosJogo.Jogos = metodosJogo.LerFicheiroJogos(dadosJogo);
+            DadosJornada.Jogos = MetodosJornada.LerFicheiroJogos(DadosJornada);
             VerificarJogos();
         }
 
         //Verificar se foram criados os 8 clubes
         public void VerificarClubes()
         {
-            contaCLubes = dadosClube.Clubes.Count;
-            lblclubeInfo.Text = $"{contaCLubes.ToString()} de 8 clubes";
+            lblclubeInfo.Text = $"{DadosClube.Clubes.Count.ToString()} de 8 clubes";
             PreencherListBoxClubes();
 
-            if (contaCLubes < 8)
+            if (DadosClube.Clubes.Count < 8)
             {
                 btnCriarClube.Visible = true;
                 btnComecar.Visible = false;
@@ -56,7 +57,7 @@ namespace MenuPrincipal
                 btnComecar.Visible = true;
             }
 
-            if (contaCLubes > 0)
+            if (DadosClube.Clubes.Count > 0)
             {
                 btnEditarClube.Visible = true;
                 btnApagarClube.Visible = true;
@@ -72,15 +73,15 @@ namespace MenuPrincipal
         public void PreencherListBoxClubes()
         {
             listBoxClubes.DataSource = null;
-            listBoxClubes.DataSource = dadosClube.Clubes;
+            listBoxClubes.DataSource = DadosClube.Clubes;
             listBoxClubes.ClearSelected();
         }
 
         //Criar um clube
         private void btnCriarClube_Click(object sender, EventArgs e)
         {
-            CriarClube criarClube = new CriarClube(this, dadosClube.Clubes);
-            criarClube.Show();
+            CriarClubeForm = new CriarClube(this);
+            CriarClubeForm.Show();
             btnCriarClube.Enabled = false;
             btnApagarClube.Enabled = false;
             btnEditarClube.Enabled = false;
@@ -120,7 +121,7 @@ namespace MenuPrincipal
 
             if (clubeAApagar != null)
             {
-                foreach (DadosClube dadosClube in dadosClube.Clubes)
+                foreach (DadosClube dadosClube in DadosClube.Clubes)
                 {
                     if (clubeAApagar.IdClube == dadosClube.IdClube)
                     {
@@ -136,8 +137,8 @@ namespace MenuPrincipal
 
                     if (DialogResult.OK == resposta)
                     {
-                        dadosClube.Clubes.Remove(apagado);
-                        metodosClube.AtualizarListaClubes(dadosClube.Clubes, dadosClube);
+                        DadosClube.Clubes.Remove(apagado);
+                        MetodosClube.AtualizarListaClubes(DadosClube);
                         PreencherListBoxClubes();
                         VerificarClubes();
                     }
@@ -157,7 +158,7 @@ namespace MenuPrincipal
 
             if (ClubeAEditar != null)
             {
-                foreach (DadosClube dadosClube in dadosClube.Clubes)
+                foreach (DadosClube dadosClube in DadosClube.Clubes)
                 {
                     if (ClubeAEditar.IdClube == dadosClube.IdClube)
                     {
@@ -167,8 +168,8 @@ namespace MenuPrincipal
 
                 if (editado != null)
                 {
-                    EditarClube editarClube = new EditarClube(this, editado, dadosClube.Clubes);
-                    editarClube.Show();
+                    EditarClubeForm = new EditarClube(this, editado);
+                    EditarClubeForm.Show();
                     btnEditarClube.Enabled = false;
                     btnCriarClube.Enabled = false;
                     btnApagarClube.Enabled = false;
@@ -202,9 +203,9 @@ namespace MenuPrincipal
             btnInfo3.Visible = true;
             btnInfo4.Visible = true;
 
-            dadosClube.Clubes = VerificarResetClubes();
+            DadosClube.Clubes = VerificarResetClubes();
 
-            dadosJogo.Jogos = metodosJogo.CriarJogosCampeonato(dadosJogo.Jogos, dadosJogo, dadosClube.Clubes);
+            DadosJornada.Jogos = MetodosJogo.CriarJogosCampeonato(DadosJogo, DadosClube, DadosJornada);
             PreencherComboBoxJornadas();
             cbJornadas.SelectedIndex = 0;
         }
@@ -212,9 +213,7 @@ namespace MenuPrincipal
         //Verificar se o campeonato já foi iniciado
         public void VerificarJogos()
         {
-            contaJogos = dadosJogo.Jogos.Count;
-
-            if (contaJogos == 56 && contaCLubes == 8)
+            if (DadosJornada.Jogos.Count == 56 && DadosClube.Clubes.Count == 8)
             {
                 listBoxClubes.Visible = false;
                 lblclubeInfo.Visible = false;
@@ -242,15 +241,16 @@ namespace MenuPrincipal
         //Preencher dataGridViewJornadas com a list Jornadas
         public void PreencherDataGridViewJornadas(string id)
         {
-            dadosJornada.Jornadas = metodosJornada.PreencherListaJornadas(dadosJornada.Jornadas, dadosJornada, dadosJogo.Jogos, id);
-
             dgvJornadas.Rows.Clear();
 
-            foreach (var jogos in dadosJornada.Jornadas)
+            foreach (var jogos in DadosJornada.Jogos)
             {
-                string[] row = { $"{jogos.Dia.ToString("dd MMM").ToUpper()} {jogos.Hora.ToShortTimeString()}", jogos.NomeClubeCasa, jogos.NomeClubeFora, jogos.Resultado };
+                if (jogos.IdJornada == id)
+                {
+                    string[] row = { $"{jogos.Dia.ToString("dd MMM").ToUpper()} {jogos.Hora.ToShortTimeString()}", jogos.ClubeCasa.Nome, jogos.ClubeFora.Nome, jogos.Resultado };
 
-                dgvJornadas.Rows.Add(row);
+                    dgvJornadas.Rows.Add(row);
+                }
             }
 
             dgvJornadas.ClearSelection();
@@ -259,22 +259,15 @@ namespace MenuPrincipal
         //Preencher comboBox com os ids das jornadas
         public void PreencherComboBoxJornadas()
         {
-            for (int i = 0; i < dadosJogo.Jogos.Count; i++)
+            for (int i = 0; i < DadosJornada.Jogos.Count; i++)
             {
-                if (i == 0)
-                {
-                    cbJornadas.Items.Add(metodosJornada.NumeroJornadas(dadosJogo.Jogos, dadosJogo, i));
-                }
-                else
-                {
-                    string id;
+                string id;
 
-                    id = metodosJornada.NumeroJornadas(dadosJogo.Jogos, dadosJogo, i);
+                id = DadosJornada.Jogos[i].IdJornada;
 
-                    if (!cbJornadas.Items.Contains(id))
-                    {
-                        cbJornadas.Items.Add(id);
-                    }
+                if (!cbJornadas.Items.Contains(id))
+                {
+                    cbJornadas.Items.Add(id);
                 }
             }
         }
@@ -289,8 +282,8 @@ namespace MenuPrincipal
         //Mostrar classificação
         private void btnMostrarClassificacao_Click(object sender, EventArgs e)
         {
-            Classificacao classificacao = new Classificacao(this, dadosClube.Clubes);
-            classificacao.Show();
+            ClassificacaoForm = new Classificacao(this);
+            ClassificacaoForm.Show();
             btnMostrarClassificacao.Enabled = false;
             btnGerarResultados.Enabled = false;
             cbJornadas.Enabled = false;
@@ -321,7 +314,7 @@ namespace MenuPrincipal
 
         private void btnGerarResultados_Click(object sender, EventArgs e)
         {
-            metodosJogo.GerarResultados(dadosJornada, dadosJogo, dadosJogo.Jogos, cbJornadas.SelectedItem.ToString(), metodosClube, dadosClube);
+            MetodosJornada.GerarResultados(DadosJornada, cbJornadas.SelectedItem.ToString(), DadosClube);
             PreencherDataGridViewJornadas(cbJornadas.SelectedItem.ToString());
             btnGerarResultados.Enabled = false;
             FinalizarCampeonato();
@@ -330,40 +323,40 @@ namespace MenuPrincipal
         //Mostrar informação sobre o 1º jogo da jornada
         private void btnInfo1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"Data: {dadosJornada.Jornadas[0].Dia.ToShortDateString()} {dadosJornada.Jornadas[0].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {dadosJornada.Jornadas[0].NomeClubeCasa}" + Environment.NewLine + $"Clube Fora: {dadosJornada.Jornadas[0].NomeClubeFora}" + Environment.NewLine + $"Estádio: {dadosJornada.Jornadas[0].Estadio}" + Environment.NewLine + $"Resultado: {dadosJornada.Jornadas[0].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"Data: {DadosJornada.Jogos[0].Dia.ToShortDateString()} {DadosJornada.Jogos[0].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {DadosJornada.Jogos[0].ClubeCasa.Nome}" + Environment.NewLine + $"Clube Fora: {DadosJornada.Jogos[0].ClubeFora.Nome}" + Environment.NewLine + $"Estádio: {DadosJornada.Jogos[0].Estadio}" + Environment.NewLine + $"Resultado: {DadosJornada.Jogos[0].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         //Mostrar informação sobre o 2º jogo da jornada
         private void btnInfo2_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"Data: {dadosJornada.Jornadas[1].Dia.ToShortDateString()} {dadosJornada.Jornadas[1].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {dadosJornada.Jornadas[1].NomeClubeCasa}" + Environment.NewLine + $"Clube Fora: {dadosJornada.Jornadas[1].NomeClubeFora}" + Environment.NewLine + $"Estádio: {dadosJornada.Jornadas[1].Estadio}" + Environment.NewLine + $"Resultado: {dadosJornada.Jornadas[1].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"Data: {DadosJornada.Jogos[1].Dia.ToShortDateString()} {DadosJornada.Jogos[1].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {DadosJornada.Jogos[1].ClubeCasa.Nome}" + Environment.NewLine + $"Clube Fora: {DadosJornada.Jogos[1].ClubeFora.Nome}" + Environment.NewLine + $"Estádio: {DadosJornada.Jogos[1].Estadio}" + Environment.NewLine + $"Resultado: {DadosJornada.Jogos[1].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         //Mostrar informação sobre o 3º jogo da jornada
         private void btnInfo3_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"Data: {dadosJornada.Jornadas[2].Dia.ToShortDateString()} {dadosJornada.Jornadas[2].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {dadosJornada.Jornadas[2].NomeClubeCasa}" + Environment.NewLine + $"Clube Fora: {dadosJornada.Jornadas[2].NomeClubeFora}" + Environment.NewLine + $"Estádio: {dadosJornada.Jornadas[2].Estadio}" + Environment.NewLine + $"Resultado: {dadosJornada.Jornadas[2].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"Data: {DadosJornada.Jogos[2].Dia.ToShortDateString()} {DadosJornada.Jogos[2].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {DadosJornada.Jogos[2].ClubeCasa.Nome}" + Environment.NewLine + $"Clube Fora: {DadosJornada.Jogos[2].ClubeFora.Nome}" + Environment.NewLine + $"Estádio: {DadosJornada.Jogos[2].Estadio}" + Environment.NewLine + $"Resultado: {DadosJornada.Jogos[2].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         //Mostrar informação sobre o 4º jogo da jornada
         private void btnInfo4_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"Data: {dadosJornada.Jornadas[3].Dia.ToShortDateString()} {dadosJornada.Jornadas[3].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {dadosJornada.Jornadas[3].NomeClubeCasa}" + Environment.NewLine + $"Clube Fora: {dadosJornada.Jornadas[3].NomeClubeFora}" + Environment.NewLine + $"Estádio: {dadosJornada.Jornadas[3].Estadio}" + Environment.NewLine + $"Resultado: {dadosJornada.Jornadas[3].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"Data: {DadosJornada.Jogos[3].Dia.ToShortDateString()} {DadosJornada.Jogos[3].Hora.ToShortTimeString()}" + Environment.NewLine + $"Clube Casa: {DadosJornada.Jogos[3].ClubeCasa.Nome}" + Environment.NewLine + $"Clube Fora: {DadosJornada.Jogos[3].ClubeFora.Nome}" + Environment.NewLine + $"Estádio: {DadosJornada.Jogos[3].Estadio}" + Environment.NewLine + $"Resultado: {DadosJornada.Jogos[3].Resultado}", "Informação do jogo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         //Gravar os clubes e os jogos quando se fecha o programa
         private void MenuPrincipal_FormClosing(object sender, FormClosingEventArgs e)
         {
-            metodosClube.GravarClube(dadosClube);
-            metodosJogo.GravarInfoJogo(dadosJogo);
+            MetodosClube.GravarClube(DadosClube);
+            MetodosJornada.GravarInfoJogo(DadosJornada);
         }
 
         //Mudar o estado do botão gerarResultados dependendo da jornada selecionada na comboBox e o número de jornadas jogadas pelos clubes
         public void EstadoBtnGerarResultados()
         {
-            foreach (var jornada in dadosJornada.Jornadas)
+            foreach (var jornada in DadosJornada.Jogos)
             {
-                if (jornada.IdJornada == VerificarIdJornada(dadosClube.Clubes[0].NumJogos))
+                if (jornada.IdJornada == MetodosJornada.VerificarIdJornadaAtual(DadosClube.Clubes[0].NumJogos))
                 {
                     btnGerarResultados.Enabled = true;
                 }
@@ -374,22 +367,10 @@ namespace MenuPrincipal
             }
         }
 
-        public string VerificarIdJornada(int numJogos)
-        {
-            if (numJogos < 9)
-            {
-                return $"J0{numJogos + 1}";
-            }
-            else
-            {
-                return $"J{numJogos + 1}";
-            }
-        }
-
         //Mudar o estado do botão finalizar de acordo com as jornadas jogadas
         public void FinalizarCampeonato()
         {
-            if (dadosClube.Clubes[0].NumJogos == 14)
+            if (DadosClube.Clubes[0].NumJogos == 14)
             {
                 btnFinalizar.Visible = true;
             }
@@ -402,7 +383,7 @@ namespace MenuPrincipal
         //Iniciar o programa na jornada correta se o campeonato já tiver começado
         public string IniciarJornadaCorreta()
         {
-            foreach (var jogos in dadosJogo.Jogos)
+            foreach (var jogos in DadosJornada.Jogos)
             {
                 if (jogos.JogoJogado == false)
                 {
@@ -416,8 +397,8 @@ namespace MenuPrincipal
         //Mostrar o campeão do campeonato
         private void btnFinalizar_Click(object sender, EventArgs e)
         {
-            Campeao campeao = new Campeao(this, dadosClube.Clubes);
-            campeao.Show();
+            CampeaoForm = new Campeao(this);
+            CampeaoForm.Show();
             btnMostrarClassificacao.Enabled = false;
             btnInfo1.Enabled = false;
             btnInfo2.Enabled = false;
@@ -446,25 +427,25 @@ namespace MenuPrincipal
         //Apagar os ficheiros xml que contêm a informação dos clubes e dos jogos e limpar as listas Clubes e Jogos
         public void ApagarClubesJogosJornadas()
         {
-            metodosClube.ApagarClube();
-            metodosJogo.ApagarInfoJogo();
-            dadosClube.Clubes.Clear();
-            dadosJogo.Jogos.Clear();
+            MetodosClube.ApagarClube();
+            MetodosJornada.ApagarInfoJogo();
+            DadosClube.Clubes.Clear();
+            DadosJornada.Jogos.Clear();
         }
 
         //Dar reset às estatísticas dos clubes
         public List<DadosClube> VerificarResetClubes()
         {
-            for (int i = 0; i < dadosClube.Clubes.Count; i++)
+            for (int i = 0; i < DadosClube.Clubes.Count; i++)
             {
-                if (dadosClube.Clubes[i].NumJogos != 0)
+                if (DadosClube.Clubes[i].NumJogos != 0)
                 {
-                    dadosClube.Clubes = metodosClube.ResetClubes(dadosClube);
-                    return dadosClube.Clubes;
+                    DadosClube.Clubes = MetodosClube.ResetClubes(DadosClube);
+                    return DadosClube.Clubes;
                 }
             }
 
-            return dadosClube.Clubes;
+            return DadosClube.Clubes;
         }
 
         private void btnAmigavel_Click(object sender, EventArgs e)

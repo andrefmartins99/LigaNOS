@@ -7,26 +7,25 @@ namespace MenuPrincipal
 {
     public partial class EditarClube : Form
     {
-        MenuPrincipal form;
-        DadosClube editado;
-        List<DadosClube> Clubes;
+        public MenuPrincipal MenuPrincipal { get; set; }
 
-        public EditarClube(MenuPrincipal Form, DadosClube Editado, List<DadosClube> clubes)
+        public DadosClube Editado { get; set; }
+
+        public EditarClube(MenuPrincipal Form, DadosClube editado)
         {
             InitializeComponent();
-            form = Form;
-            editado = Editado;
-            Clubes = clubes;
+            MenuPrincipal = Form;
+            Editado = editado;
 
-            txtId.Text = editado.IdClube;
-            txtNome.Text = editado.Nome;
-            txtTreinador.Text = editado.Treinador;
-            txtEstadio.Text = editado.Estadio;
+            txtId.Text = Editado.IdClube;
+            txtNome.Text = Editado.Nome;
+            txtTreinador.Text = Editado.Treinador;
+            txtEstadio.Text = Editado.Estadio;
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)
         {
-            form.EstadobtnEditar();
+            MenuPrincipal.EstadobtnEditar();
             this.Close();
         }
 
@@ -39,12 +38,12 @@ namespace MenuPrincipal
                 return;
             }
 
-            string nomes = txtNome.Text.Trim();
-            string treinadores = txtTreinador.Text.Trim();
-            string estadios = txtEstadio.Text.Trim();
+            string nome = txtNome.Text.Trim();
+            string treinador = txtTreinador.Text.Trim();
+            string estadio = txtEstadio.Text.Trim();
 
             //Verificar se a informação inserida já existe na lista Clubes
-            if (VerificarCaixas(nomes, treinadores, estadios) == true)
+            if (VerificarCaixas(nome, treinador, estadio) == true)
             {
                 MessageBox.Show("Nome, Treinador ou Estádio inserido já existe no campenonato, por favor introduza outro!!!", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtNome.Text = string.Empty;
@@ -54,13 +53,13 @@ namespace MenuPrincipal
                 return;
             }
 
-            editado.Nome = nomes;
-            editado.Treinador = treinadores;
-            editado.Estadio = estadios;
+            Editado.Nome = nome;
+            Editado.Treinador = treinador;
+            Editado.Estadio = estadio;
 
-            form.EstadobtnEditar();
-            form.PreencherListBoxClubes();
-            form.VerificarClubes();
+            MenuPrincipal.EstadobtnEditar();
+            MenuPrincipal.PreencherListBoxClubes();
+            MenuPrincipal.VerificarClubes();
             this.Close();
         }
 
@@ -105,15 +104,14 @@ namespace MenuPrincipal
         {
             bool repetido = false;
 
-            for (int i = 0; repetido != true && i < Clubes.Count; i++)
+            for (int i = 0; repetido != true && i < MenuPrincipal.DadosClube.Clubes.Count; i++)
             {
-                var campos = Clubes[i].ToString().Split(';');
-                string id = campos[0];
-                string nome = campos[1];
-                string treinador = campos[2];
-                string estadio = campos[3];
+                string id = MenuPrincipal.DadosClube.Clubes[i].IdClube;
+                string nome = MenuPrincipal.DadosClube.Clubes[i].Nome;
+                string treinador = MenuPrincipal.DadosClube.Clubes[i].Treinador;
+                string estadio = MenuPrincipal.DadosClube.Clubes[i].Estadio;
 
-                if (editado.IdClube != id)
+                if (Editado.IdClube != id)
                 {
                     if (nome.ToLower() == nomes.ToLower() || treinador.ToLower() == treinadores.ToLower() || estadio.ToLower() == estadios.ToLower())
                     {
@@ -127,7 +125,7 @@ namespace MenuPrincipal
 
         private void EditarEquipa_FormClosing(object sender, FormClosingEventArgs e)
         {
-            form.EstadobtnEditar();
+            MenuPrincipal.EstadobtnEditar();
         }
     }
 }

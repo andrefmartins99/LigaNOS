@@ -7,32 +7,28 @@ namespace MenuPrincipal
 {
     public partial class Campeao : Form
     {
-        DadosClassificacao dadosClassificacao;
-        MetodosClassificacao metodosClassificacao;
-        List<DadosClube> Clubes;
-        MenuPrincipal form;
+        public MenuPrincipal MenuPrincipal { get; set; }
 
-        public Campeao(MenuPrincipal Form, List<DadosClube> clubes)
+        public DadosClassificacao DadosClassificacao { get; set; }
+
+        public Campeao(MenuPrincipal Form)
         {
             InitializeComponent();
-            form = Form;
-            Clubes = clubes;
-            dadosClassificacao = new DadosClassificacao();
-            metodosClassificacao = new MetodosClassificacao();
-            dadosClassificacao.Classificacoes = metodosClassificacao.PreencherListaClassificacoes(Clubes, dadosClassificacao.Classificacoes, dadosClassificacao);
+            MenuPrincipal = Form;
+            DadosClassificacao = new DadosClassificacao();
 
-            lblCampeao.Text = $"Parabéns!!! O campeão é o {dadosClassificacao.Classificacoes[0].Nome}";
-            lblEstatisticaCampeao.Text = $"Pontos: {dadosClassificacao.Classificacoes[0].Pontos}{Environment.NewLine}" +
-                $"Número de vitórias: {dadosClassificacao.Classificacoes[0].NumVitorias}{Environment.NewLine}" +
-                $"Número de derrotas: {dadosClassificacao.Classificacoes[0].NumDerrotas}{Environment.NewLine}" +
-                $"Número de empates: {dadosClassificacao.Classificacoes[0].NumEmpates}{Environment.NewLine}" +
-                $"Golos Marcados / Golos sofridos: {dadosClassificacao.Classificacoes[0].GolosMarcados} / {dadosClassificacao.Classificacoes[0].GolosSofridos}{Environment.NewLine}" +
-                $"Diferença de golos: {dadosClassificacao.Classificacoes[0].DiferencaGolos}";
+            lblCampeao.Text = $"Parabéns!!! O campeão é o {DadosClassificacao.Clubes[0].Nome}";
+            lblEstatisticaCampeao.Text = $"Pontos: {DadosClassificacao.Clubes[0].Pontos}{Environment.NewLine}" +
+                $"Número de vitórias: {DadosClassificacao.Clubes[0].NumVitorias}{Environment.NewLine}" +
+                $"Número de derrotas: {DadosClassificacao.Clubes[0].NumDerrotas}{Environment.NewLine}" +
+                $"Número de empates: {DadosClassificacao.Clubes[0].NumEmpates}{Environment.NewLine}" +
+                $"Golos Marcados / Golos sofridos: {DadosClassificacao.Clubes[0].GolosMarcados} / {DadosClassificacao.Clubes[0].GolosSofridos}{Environment.NewLine}" +
+                $"Diferença de golos: {DadosClassificacao.Clubes[0].DiferencaGolos}";
         }
 
         private void Campeao_FormClosing(object sender, FormClosingEventArgs e)
         {
-            form.NaoFinalizar();
+            MenuPrincipal.NaoFinalizar();
         }
 
         private void btnTerminarCampeonato_Click(object sender, EventArgs e)
@@ -43,7 +39,7 @@ namespace MenuPrincipal
 
             if (resposta == DialogResult.Yes)
             {
-                form.ApagarClubesJogosJornadas();
+                MenuPrincipal.ApagarClubesJogosJornadas();
                 Application.Exit();
             }
         }

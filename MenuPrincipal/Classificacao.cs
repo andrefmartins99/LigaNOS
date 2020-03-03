@@ -7,33 +7,33 @@ namespace MenuPrincipal
 {
     public partial class Classificacao : Form
     {
-        DadosClassificacao dadosClassificacao;
-        MetodosClassificacao metodosClassificacao;
-        List<DadosClube> Clubes;
-        MenuPrincipal form;
-        int posicao = 1;
+        public MenuPrincipal MenuPrincipal { get; set; }
 
-        public Classificacao(MenuPrincipal Form, List<DadosClube> clubes)
+        public DadosClassificacao DadosClassificacao { get; set; }
+
+        public int Posicao { get; set; }
+
+        public Classificacao(MenuPrincipal Form)
         {
             InitializeComponent();
-            form = Form;
-            Clubes = clubes;
-            metodosClassificacao = new MetodosClassificacao();
-            dadosClassificacao = new DadosClassificacao();
-            dadosClassificacao.Classificacoes = metodosClassificacao.PreencherListaClassificacoes(Clubes, dadosClassificacao.Classificacoes, dadosClassificacao);
+            MenuPrincipal = Form;
+            DadosClassificacao = new DadosClassificacao();
+            MetodosClassificacao.OrdenarListaClubes(DadosClassificacao.Clubes);
             PreencherDataGridViewClassificacao();
         }
 
         //Preencher as linhas da datagridview com as estatísticas dos clubes
         public void PreencherDataGridViewClassificacao()
         {
+            Posicao = 1;
 
-            foreach (var clube in dadosClassificacao.Classificacoes)
+            foreach (var clube in DadosClassificacao.Clubes)
             {
-                string[] row = { posicao.ToString(), clube.Nome, clube.Pontos.ToString(), clube.NumJogos.ToString(), clube.NumVitorias.ToString(), clube.NumDerrotas.ToString(), clube.NumEmpates.ToString(), clube.GolosMarcados.ToString(), clube.GolosSofridos.ToString(), clube.DiferencaGolos.ToString() };
+
+                string[] row = { Posicao.ToString(), clube.Nome, clube.Pontos.ToString(), clube.NumJogos.ToString(), clube.NumVitorias.ToString(), clube.NumDerrotas.ToString(), clube.NumEmpates.ToString(), clube.GolosMarcados.ToString(), clube.GolosSofridos.ToString(), clube.DiferencaGolos.ToString() };
 
                 dgvClassificacao.Rows.Add(row);
-                posicao++;
+                Posicao++;
             }
 
             dgvClassificacao.ClearSelection();
@@ -41,13 +41,13 @@ namespace MenuPrincipal
 
         private void btnVoltar_Click(object sender, EventArgs e)
         {
-            form.EstadoBtnVoltar();
+            MenuPrincipal.EstadoBtnVoltar();
             this.Close();
         }
 
         private void Classificacao_FormClosing(object sender, FormClosingEventArgs e)
         {
-            form.EstadoBtnVoltar();
+            MenuPrincipal.EstadoBtnVoltar();
         }
     }
 }

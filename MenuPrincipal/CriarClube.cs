@@ -8,22 +8,17 @@ namespace MenuPrincipal
 {
     public partial class CriarClube : Form
     {
-        List<DadosClube> Clubes;
-        DadosClube dadosClube;
-        MetodosClube metodosClube;
-        MenuPrincipal form;
+        public MenuPrincipal MenuPrincipal { get; set; }
 
-        public CriarClube(MenuPrincipal Form, List<DadosClube> clubes)
+        public CriarClube(MenuPrincipal Form)
         {
             InitializeComponent();
-            form = Form;
-            Clubes = clubes;
-            metodosClube = new MetodosClube();
+            MenuPrincipal = Form;
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)
         {
-            form.EstadobtnCriar();
+            MenuPrincipal.EstadobtnCriar();
             this.Close();
         }
 
@@ -72,13 +67,13 @@ namespace MenuPrincipal
                 return;
             }
 
-            string id = metodosClube.GerarIdClube(Clubes);
-            string nomes = txtNome.Text.Trim();
-            string treinadores = txtTreinador.Text.Trim();
-            string estadios = txtEstadio.Text.Trim();
+            string id = MetodosClube.GerarIdClube(MenuPrincipal.DadosClube.Clubes);
+            string nome = txtNome.Text.Trim();
+            string treinador = txtTreinador.Text.Trim();
+            string estadio = txtEstadio.Text.Trim();
 
             //Verificar se a informação inserida já existe na lista Clubes
-            if (VerificarCaixas(nomes, treinadores, estadios) == true)
+            if (VerificarCaixas(nome, treinador, estadio) == true)
             {
                 MessageBox.Show("Nome, Treinador ou Estádio inserido já existe no campenonato, por favor introduza outro!!!", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtNome.Text = string.Empty;
@@ -88,18 +83,19 @@ namespace MenuPrincipal
                 return;
             }
 
-            dadosClube = new DadosClube();
+            MenuPrincipal.DadosClube = new DadosClube()
+            {
+                IdClube = id,
+                Nome = nome,
+                Treinador = treinador,
+                Estadio = estadio,
+            };
 
-            dadosClube.IdClube = id;
-            dadosClube.Nome = nomes;
-            dadosClube.Treinador = treinadores;
-            dadosClube.Estadio = estadios;
+            MenuPrincipal.DadosClube.Clubes.Add(MenuPrincipal.DadosClube);
 
-            Clubes.Add(dadosClube);
-
-            form.EstadobtnCriar();
-            form.PreencherListBoxClubes();
-            form.VerificarClubes();
+            MenuPrincipal.EstadobtnCriar();
+            MenuPrincipal.PreencherListBoxClubes();
+            MenuPrincipal.VerificarClubes();
             this.Close();
         }
 
@@ -108,12 +104,11 @@ namespace MenuPrincipal
         {
             bool repetido = false;
 
-            for (int i = 0; repetido != true && i < Clubes.Count; i++)
+            for (int i = 0; repetido != true && i < MenuPrincipal.DadosClube.Clubes.Count; i++)
             {
-                var campos = Clubes[i].ToString().Split(';');
-                string nome = campos[1];
-                string treinador = campos[2];
-                string estadio = campos[3];
+                string nome = MenuPrincipal.DadosClube.Clubes[i].Nome;
+                string treinador = MenuPrincipal.DadosClube.Clubes[i].Treinador;
+                string estadio = MenuPrincipal.DadosClube.Clubes[i].Estadio;
 
                 if (nome.ToLower() == nomes.ToLower() || treinador.ToLower() == treinadores.ToLower() || estadio.ToLower() == estadios.ToLower())
                 {
@@ -125,7 +120,7 @@ namespace MenuPrincipal
 
         private void CriarEquipa_FormClosing(object sender, FormClosingEventArgs e)
         {
-            form.EstadobtnCriar();
+            MenuPrincipal.EstadobtnCriar();
         }
     }
 }

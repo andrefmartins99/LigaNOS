@@ -8,19 +8,15 @@ namespace Biblioteca
     {
         public string IdJogo { get; set; }
 
-        public string IdClubeCasa { get; set; }
+        public DadosClube ClubeCasa { get; set; }
 
-        public string IdClubeFora { get; set; }
-
-        public string NomeClubeCasa { get; set; }
-
-        public string NomeClubeFora { get; set; }
+        public DadosClube ClubeFora { get; set; }
 
         public DateTime Dia { get; set; }
 
         public DateTime Hora { get; set; }
 
-        public string Estadio { get; set; }
+        public string Estadio { get;set; }
 
         public string IdJornada { get; set; }
 
@@ -36,13 +32,11 @@ namespace Biblioteca
             }
         }
 
-        public List<DadosJogo> Jogos { get; set; }
-
         public bool JogoJogado { get; set; }
 
         public override string ToString()
         {
-            return $"{IdJogo};{NomeClubeCasa};{NomeClubeFora};{Dia.ToString("dd MMM").ToUpper()};{Hora.ToShortTimeString()};{Estadio};{IdJornada};{GolosClubeCasa};{GolosClubeFora};{Resultado};{JogoJogado}";
+            return $"{IdJogo};{ClubeCasa.Nome};{ClubeFora.Nome};{Dia.ToString("dd MMM").ToUpper()};{Hora.ToShortTimeString()};{Estadio};{IdJornada};{GolosClubeCasa};{GolosClubeFora};{Resultado};{JogoJogado}";
         }
     }
 }

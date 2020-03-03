@@ -91,7 +91,7 @@
             this.listBoxClubes.Location = new System.Drawing.Point(93, 338);
             this.listBoxClubes.Margin = new System.Windows.Forms.Padding(4);
             this.listBoxClubes.Name = "listBoxClubes";
-            this.listBoxClubes.Size = new System.Drawing.Size(463, 204);
+            this.listBoxClubes.Size = new System.Drawing.Size(651, 204);
             this.listBoxClubes.TabIndex = 2;
             // 
             // btnComecar

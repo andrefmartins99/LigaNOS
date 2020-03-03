@@ -1,54 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace Biblioteca
 {
-    public class MetodosJogo
+    public static class MetodosJogo
     {
-        //Gravar informações da lista Jogos no ficheiro xml jogoInfo
-        public void GravarInfoJogo(DadosJogo dadosJogo)
-        {
-            string ficheiro = "jogoInfo.xml";
-            XmlSerializer serial = new XmlSerializer(typeof(List<DadosJogo>));
-            StreamWriter sw = new StreamWriter(ficheiro);
-            serial.Serialize(sw, dadosJogo.Jogos);
-            sw.Close();
-        }
-
-        //Apagar ficheiro xml jogoInfo
-        public void ApagarInfoJogo()
-        {
-            string ficheiro = "jogoInfo.xml";
-            File.Delete(ficheiro);
-        }
-
         //Gerar todos os jogos do campeonato
-        public List<DadosJogo> CriarJogosCampeonato(List<DadosJogo> Jogos, DadosJogo dadosJogo, List<DadosClube> Clubes)
+        public static List<DadosJogo> CriarJogosCampeonato(DadosJogo dadosJogo, DadosClube dadosClube, DadosJornada dadosJornada)
         {
-            Jogos = new List<DadosJogo>();
-            List<string> clubes = new List<string>();
-            List<string> voltas1 = new List<string>();
-            List<string> voltas2 = new List<string>();
-            List<string> jogo = new List<string>();
+            List<DadosJogo> voltas1 = new List<DadosJogo>();
+            List<DadosJogo> voltas2 = new List<DadosJogo>();
+            DadosJogo jogo;
+            DadosJogo verificaJogo1;
+            DadosJogo verificaJogo2;
             Random rng = new Random();
             int rnd;
-
-            //Retirar os ids dos clubes criados da lista Clubes
-            for (int i = 0; i < Clubes.Count; i++)
-            {
-                var campos = Clubes[i].ToString().Split(';');
-                string id = campos[0];
-                clubes.Add(id);
-            }
 
             //Gerar jogos
             do
             {
-                for (int i = 0; i < clubes.Count - 1; i++)
+                for (int i = 0; i < dadosClube.Clubes.Count - 1; i++)
                 {
-                    for (int j = i + 1; j < clubes.Count; j++)
+                    for (int j = i + 1; j < dadosClube.Clubes.Count; j++)
                     {
                         int contador = 0;
                         rnd = rng.Next(1, 11);
@@ -61,15 +37,40 @@ namespace Biblioteca
                             {
                                 if (rnd > 5)
                                 {
-                                    voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                    jogo.Add("clube[i];clube[j]");
-                                    voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                    jogo = new DadosJogo
+                                    {
+                                        ClubeCasa = dadosClube.Clubes[i],
+                                        ClubeFora = dadosClube.Clubes[j],
+
+                                    };
+
+                                    voltas1.Add(jogo);//1º volta
+
+                                    jogo = new DadosJogo
+                                    {
+                                        ClubeCasa = dadosClube.Clubes[j],
+                                        ClubeFora = dadosClube.Clubes[i],
+                                    };
+
+                                    voltas2.Add(jogo);//2º volta
                                 }
                                 else
                                 {
-                                    voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                    jogo.Add("clube[j];clube[i]");
-                                    voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                    jogo = new DadosJogo
+                                    {
+                                        ClubeCasa = dadosClube.Clubes[j],
+                                        ClubeFora = dadosClube.Clubes[i],
+                                    };
+
+                                    voltas1.Add(jogo);//1º volta
+
+                                    jogo = new DadosJogo
+                                    {
+                                        ClubeCasa = dadosClube.Clubes[i],
+                                        ClubeFora = dadosClube.Clubes[j],
+                                    };
+
+                                    voltas2.Add(jogo);//2º volta
                                 }
                             }
                             else
@@ -77,16 +78,15 @@ namespace Biblioteca
                                 //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 0; l < voltas1.Count; l++)
                                 {
-                                    var clube = voltas1[l].Split(';');
-                                    string clube1 = clube[0];
-                                    string clube2 = clube[1];
+                                    string clube1 = voltas1[l].ClubeCasa.IdClube;
+                                    string clube2 = voltas1[l].ClubeFora.IdClube;
 
-                                    if (clube1 == clubes[i] || clube1 == clubes[j])
+                                    if (clube1 == dadosClube.Clubes[i].IdClube || clube1 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
 
-                                    if (clube2 == clubes[i] || clube2 == clubes[j])
+                                    if (clube2 == dadosClube.Clubes[i].IdClube || clube2 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
@@ -96,15 +96,39 @@ namespace Biblioteca
                                 {
                                     if (rnd > 5)
                                     {
-                                        voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                        jogo.Add("clube[i];clube[j]");
-                                        voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                     else
                                     {
-                                        voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                        jogo.Add("clube[j];clube[i]");
-                                        voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                 }
                             }
@@ -120,24 +144,23 @@ namespace Biblioteca
 
                             for (int l = 0; l < voltas1.Count; l++)
                             {
-                                var clube = voltas1[l].Split(';');
-                                string clube1 = clube[0];
-                                string clube2 = clube[1];
+                                string clube1 = voltas1[l].ClubeCasa.IdClube;
+                                string clube2 = voltas1[l].ClubeFora.IdClube;
 
-                                if (clube1 == clubes[i])
+                                if (clube1 == dadosClube.Clubes[i].IdClube)
                                 {
                                     contadorCasa1++;
                                 }
-                                else if (clube2 == clubes[i])
+                                else if (clube2 == dadosClube.Clubes[i].IdClube)
                                 {
                                     contadorFora1++;
                                 }
 
-                                if (clube1 == clubes[j])
+                                if (clube1 == dadosClube.Clubes[j].IdClube)
                                 {
                                     contadorCasa2++;
                                 }
-                                else if (clube2 == clubes[j])
+                                else if (clube2 == dadosClube.Clubes[j].IdClube)
                                 {
                                     contadorFora2++;
                                 }
@@ -155,20 +178,56 @@ namespace Biblioteca
                             //1º Jogo da Jornada
                             if (voltas1.Count == 4)
                             {
+                                verificaJogo1 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[i],
+                                    ClubeFora = dadosClube.Clubes[j],
+                                };
+
+                                verificaJogo2 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[j],
+                                    ClubeFora = dadosClube.Clubes[i],
+                                };
+
                                 //Verificar se o jogo já foi criado alguma vez no campeonato
-                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}")))
+                                if (!(voltas1.Contains(verificaJogo1)) && !(voltas1.Contains(verificaJogo2)))
                                 {
                                     if (rnd > 5)
                                     {
-                                        voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                        jogo.Add("clube[i];clube[j]");
-                                        voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                     else
                                     {
-                                        voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                        jogo.Add("clube[j];clube[i]");
-                                        voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                 }
                             }
@@ -177,35 +236,70 @@ namespace Biblioteca
                                 //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 4; l < voltas1.Count; l++)
                                 {
-                                    var clube = voltas1[l].Split(';');
-                                    string clube1 = clube[0];
-                                    string clube2 = clube[1];
+                                    string clube1 = voltas1[l].ClubeCasa.IdClube;
+                                    string clube2 = voltas1[l].ClubeFora.IdClube;
 
-                                    if (clube1 == clubes[i] || clube1 == clubes[j])
+                                    if (clube1 == dadosClube.Clubes[i].IdClube || clube1 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
 
-                                    if (clube2 == clubes[i] || clube2 == clubes[j])
+                                    if (clube2 == dadosClube.Clubes[i].IdClube || clube2 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
                                 }
 
+                                verificaJogo1 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[i],
+                                    ClubeFora = dadosClube.Clubes[j],
+                                };
+
+                                verificaJogo2 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[j],
+                                    ClubeFora = dadosClube.Clubes[i],
+                                };
+
                                 //Verificar se o jogo já foi criado alguma vez no campeonato
-                                if (contador == 0 && (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))))
+                                if (contador == 0 && (!(voltas1.Contains(verificaJogo1)) && !(voltas1.Contains(verificaJogo2))))
                                 {
                                     if (rnd > 5)
                                     {
-                                        voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                        jogo.Add("clube[i];clube[j]");
-                                        voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                     else
                                     {
-                                        voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                        jogo.Add("clube[j];clube[i]");
-                                        voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                 }
                             }
@@ -221,24 +315,23 @@ namespace Biblioteca
 
                             for (int l = 4; l < voltas1.Count; l++)
                             {
-                                var clube = voltas1[l].Split(';');
-                                string clube1 = clube[0];
-                                string clube2 = clube[1];
+                                string clube1 = voltas1[l].ClubeCasa.IdClube;
+                                string clube2 = voltas1[l].ClubeFora.IdClube;
 
-                                if (clube1 == clubes[i])
+                                if (clube1 == dadosClube.Clubes[i].IdClube)
                                 {
                                     contadorCasa1++;
                                 }
-                                else if (clube2 == clubes[i])
+                                else if (clube2 == dadosClube.Clubes[i].IdClube)
                                 {
                                     contadorFora1++;
                                 }
 
-                                if (clube1 == clubes[j])
+                                if (clube1 == dadosClube.Clubes[j].IdClube)
                                 {
                                     contadorCasa2++;
                                 }
-                                else if (clube2 == clubes[j])
+                                else if (clube2 == dadosClube.Clubes[j].IdClube)
                                 {
                                     contadorFora2++;
                                 }
@@ -256,20 +349,56 @@ namespace Biblioteca
                             //1º Jogo da Jornada
                             if (voltas1.Count == 8)
                             {
+                                verificaJogo1 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[i],
+                                    ClubeFora = dadosClube.Clubes[j],
+                                };
+
+                                verificaJogo2 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[j],
+                                    ClubeFora = dadosClube.Clubes[i],
+                                };
+
                                 //Verificar se o jogo já foi criado alguma vez no campeonato
-                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}")))
+                                if (!(voltas1.Contains(verificaJogo1)) && !(voltas1.Contains(verificaJogo2)))
                                 {
                                     if (rnd > 5)
                                     {
-                                        voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                        jogo.Add("clube[i];clube[j]");
-                                        voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                     else
                                     {
-                                        voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                        jogo.Add("clube[j];clube[i]");
-                                        voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                 }
                             }
@@ -278,35 +407,70 @@ namespace Biblioteca
                                 //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 8; l < voltas1.Count; l++)
                                 {
-                                    var clube = voltas1[l].Split(';');
-                                    string clube1 = clube[0];
-                                    string clube2 = clube[1];
+                                    string clube1 = voltas1[l].ClubeCasa.IdClube;
+                                    string clube2 = voltas1[l].ClubeFora.IdClube;
 
-                                    if (clube1 == clubes[i] || clube1 == clubes[j])
+                                    if (clube1 == dadosClube.Clubes[i].IdClube || clube1 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
 
-                                    if (clube2 == clubes[i] || clube2 == clubes[j])
+                                    if (clube2 == dadosClube.Clubes[i].IdClube || clube2 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
                                 }
 
+                                verificaJogo1 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[i],
+                                    ClubeFora = dadosClube.Clubes[j],
+                                };
+
+                                verificaJogo2 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[j],
+                                    ClubeFora = dadosClube.Clubes[i],
+                                };
+
                                 //Verificar se o jogo já foi criado alguma vez no campeonato
-                                if (contador == 0 && (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))))
+                                if (contador == 0 && (!(voltas1.Contains(verificaJogo1)) && !(voltas1.Contains(verificaJogo2))))
                                 {
                                     if (rnd > 5)
                                     {
-                                        voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                        jogo.Add("clube[i];clube[j]");
-                                        voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                     else
                                     {
-                                        voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                        jogo.Add("clube[j];clube[i]");
-                                        voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                 }
                             }
@@ -322,24 +486,23 @@ namespace Biblioteca
 
                             for (int l = 8; l < voltas1.Count; l++)
                             {
-                                var clube = voltas1[l].Split(';');
-                                string clube1 = clube[0];
-                                string clube2 = clube[1];
+                                string clube1 = voltas1[l].ClubeCasa.IdClube;
+                                string clube2 = voltas1[l].ClubeFora.IdClube;
 
-                                if (clube1 == clubes[i])
+                                if (clube1 == dadosClube.Clubes[i].IdClube)
                                 {
                                     contadorCasa1++;
                                 }
-                                else if (clube2 == clubes[i])
+                                else if (clube2 == dadosClube.Clubes[i].IdClube)
                                 {
                                     contadorFora1++;
                                 }
 
-                                if (clube1 == clubes[j])
+                                if (clube1 == dadosClube.Clubes[j].IdClube)
                                 {
                                     contadorCasa2++;
                                 }
-                                else if (clube2 == clubes[j])
+                                else if (clube2 == dadosClube.Clubes[j].IdClube)
                                 {
                                     contadorFora2++;
                                 }
@@ -357,20 +520,56 @@ namespace Biblioteca
                             //1º Jogo da Jornada
                             if (voltas1.Count == 12)
                             {
+                                verificaJogo1 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[i],
+                                    ClubeFora = dadosClube.Clubes[j],
+                                };
+
+                                verificaJogo2 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[j],
+                                    ClubeFora = dadosClube.Clubes[i],
+                                };
+
                                 //Verificar se o jogo já foi criado alguma vez no campeonato
-                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}")))
+                                if (!(voltas1.Contains(verificaJogo1)) && !(voltas1.Contains(verificaJogo2)))
                                 {
                                     if (rnd > 5)
                                     {
-                                        voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                        jogo.Add("clube[i];clube[j]");
-                                        voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                     else
                                     {
-                                        voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                        jogo.Add("clube[j];clube[i]");
-                                        voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                 }
                             }
@@ -379,35 +578,70 @@ namespace Biblioteca
                                 //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 12; l < voltas1.Count; l++)
                                 {
-                                    var clube = voltas1[l].Split(';');
-                                    string clube1 = clube[0];
-                                    string clube2 = clube[1];
+                                    string clube1 = voltas1[l].ClubeCasa.IdClube;
+                                    string clube2 = voltas1[l].ClubeFora.IdClube;
 
-                                    if (clube1 == clubes[i] || clube1 == clubes[j])
+                                    if (clube1 == dadosClube.Clubes[i].IdClube || clube1 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
 
-                                    if (clube2 == clubes[i] || clube2 == clubes[j])
+                                    if (clube2 == dadosClube.Clubes[i].IdClube || clube2 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
                                 }
 
+                                verificaJogo1 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[i],
+                                    ClubeFora = dadosClube.Clubes[j],
+                                };
+
+                                verificaJogo2 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[j],
+                                    ClubeFora = dadosClube.Clubes[i],
+                                };
+
                                 //Verificar se o jogo já foi criado alguma vez no campeonato
-                                if (contador == 0 && (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))))
+                                if (contador == 0 && (!(voltas1.Contains(verificaJogo1)) && !(voltas1.Contains(verificaJogo2))))
                                 {
                                     if (rnd > 5)
                                     {
-                                        voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                        jogo.Add("clube[i];clube[j]");
-                                        voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                     else
                                     {
-                                        voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                        jogo.Add("clube[j];clube[i]");
-                                        voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                 }
                             }
@@ -423,24 +657,23 @@ namespace Biblioteca
 
                             for (int l = 12; l < voltas1.Count; l++)
                             {
-                                var clube = voltas1[l].Split(';');
-                                string clube1 = clube[0];
-                                string clube2 = clube[1];
+                                string clube1 = voltas1[l].ClubeCasa.IdClube;
+                                string clube2 = voltas1[l].ClubeFora.IdClube;
 
-                                if (clube1 == clubes[i])
+                                if (clube1 == dadosClube.Clubes[i].IdClube)
                                 {
                                     contadorCasa1++;
                                 }
-                                else if (clube2 == clubes[i])
+                                else if (clube2 == dadosClube.Clubes[i].IdClube)
                                 {
                                     contadorFora1++;
                                 }
 
-                                if (clube1 == clubes[j])
+                                if (clube1 == dadosClube.Clubes[j].IdClube)
                                 {
                                     contadorCasa2++;
                                 }
-                                else if (clube2 == clubes[j])
+                                else if (clube2 == dadosClube.Clubes[j].IdClube)
                                 {
                                     contadorFora2++;
                                 }
@@ -458,20 +691,56 @@ namespace Biblioteca
                             //1º Jogo da Jornada
                             if (voltas1.Count == 16)
                             {
+                                verificaJogo1 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[i],
+                                    ClubeFora = dadosClube.Clubes[j],
+                                };
+
+                                verificaJogo2 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[j],
+                                    ClubeFora = dadosClube.Clubes[i],
+                                };
+
                                 //Verificar se o jogo já foi criado alguma vez no campeonato
-                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}")))
+                                if (!(voltas1.Contains(verificaJogo1)) && !(voltas1.Contains(verificaJogo2)))
                                 {
                                     if (rnd > 5)
                                     {
-                                        voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                        jogo.Add("clube[i];clube[j]");
-                                        voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                     else
                                     {
-                                        voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                        jogo.Add("clube[j];clube[i]");
-                                        voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                 }
                             }
@@ -480,35 +749,71 @@ namespace Biblioteca
                                 //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 16; l < voltas1.Count; l++)
                                 {
-                                    var clube = voltas1[l].Split(';');
-                                    string clube1 = clube[0];
-                                    string clube2 = clube[1];
+                                    string clube1 = voltas1[l].ClubeCasa.IdClube;
+                                    string clube2 = voltas1[l].ClubeFora.IdClube;
 
-                                    if (clube1 == clubes[i] || clube1 == clubes[j])
+                                    if (clube1 == dadosClube.Clubes[i].IdClube || clube1 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
 
-                                    if (clube2 == clubes[i] || clube2 == clubes[j])
+                                    if (clube2 == dadosClube.Clubes[i].IdClube || clube2 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
                                 }
 
                                 //Verificar se o jogo já foi criado alguma vez no campeonato
-                                if (contador == 0 && (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))))
+                                verificaJogo1 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[i],
+                                    ClubeFora = dadosClube.Clubes[j],
+                                };
+
+                                verificaJogo2 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[j],
+                                    ClubeFora = dadosClube.Clubes[i],
+                                };
+
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
+                                if (contador == 0 && (!(voltas1.Contains(verificaJogo1)) && !(voltas1.Contains(verificaJogo2))))
                                 {
                                     if (rnd > 5)
                                     {
-                                        voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                        jogo.Add("clube[i];clube[j]");
-                                        voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                     else
                                     {
-                                        voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                        jogo.Add("clube[j];clube[i]");
-                                        voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                 }
                             }
@@ -524,24 +829,23 @@ namespace Biblioteca
 
                             for (int l = 16; l < voltas1.Count; l++)
                             {
-                                var clube = voltas1[l].Split(';');
-                                string clube1 = clube[0];
-                                string clube2 = clube[1];
+                                string clube1 = voltas1[l].ClubeCasa.IdClube;
+                                string clube2 = voltas1[l].ClubeFora.IdClube;
 
-                                if (clube1 == clubes[i])
+                                if (clube1 == dadosClube.Clubes[i].IdClube)
                                 {
                                     contadorCasa1++;
                                 }
-                                else if (clube2 == clubes[i])
+                                else if (clube2 == dadosClube.Clubes[i].IdClube)
                                 {
                                     contadorFora1++;
                                 }
 
-                                if (clube1 == clubes[j])
+                                if (clube1 == dadosClube.Clubes[j].IdClube)
                                 {
                                     contadorCasa2++;
                                 }
-                                else if (clube2 == clubes[j])
+                                else if (clube2 == dadosClube.Clubes[j].IdClube)
                                 {
                                     contadorFora2++;
                                 }
@@ -559,20 +863,56 @@ namespace Biblioteca
                             //1º Jogo da Jornada
                             if (voltas1.Count == 20)
                             {
+                                verificaJogo1 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[i],
+                                    ClubeFora = dadosClube.Clubes[j],
+                                };
+
+                                verificaJogo2 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[j],
+                                    ClubeFora = dadosClube.Clubes[i],
+                                };
+
                                 //Verificar se o jogo já foi criado alguma vez no campeonato
-                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}")))
+                                if (!(voltas1.Contains(verificaJogo1)) && !(voltas1.Contains(verificaJogo2)))
                                 {
                                     if (rnd > 5)
                                     {
-                                        voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                        jogo.Add("clube[i];clube[j]");
-                                        voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                     else
                                     {
-                                        voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                        jogo.Add("clube[j];clube[i]");
-                                        voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                 }
                             }
@@ -581,35 +921,71 @@ namespace Biblioteca
                                 //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 20; l < voltas1.Count; l++)
                                 {
-                                    var clube = voltas1[l].Split(';');
-                                    string clube1 = clube[0];
-                                    string clube2 = clube[1];
+                                    string clube1 = voltas1[l].ClubeCasa.IdClube;
+                                    string clube2 = voltas1[l].ClubeFora.IdClube;
 
-                                    if (clube1 == clubes[i] || clube1 == clubes[j])
+                                    if (clube1 == dadosClube.Clubes[i].IdClube || clube1 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
 
-                                    if (clube2 == clubes[i] || clube2 == clubes[j])
+                                    if (clube2 == dadosClube.Clubes[i].IdClube || clube2 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
                                 }
 
                                 //Verificar se o jogo já foi criado alguma vez no campeonato
-                                if (contador == 0 && (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))))
+                                verificaJogo1 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[i],
+                                    ClubeFora = dadosClube.Clubes[j],
+                                };
+
+                                verificaJogo2 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[j],
+                                    ClubeFora = dadosClube.Clubes[i],
+                                };
+
+                                //Verificar se o jogo já foi criado alguma vez no campeonato
+                                if (contador == 0 && (!(voltas1.Contains(verificaJogo1)) && !(voltas1.Contains(verificaJogo2))))
                                 {
                                     if (rnd > 5)
                                     {
-                                        voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                        jogo.Add("clube[i];clube[j]");
-                                        voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                     else
                                     {
-                                        voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                        jogo.Add("clube[j];clube[i]");
-                                        voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                 }
                             }
@@ -625,24 +1001,23 @@ namespace Biblioteca
 
                             for (int l = 20; l < voltas1.Count; l++)
                             {
-                                var clube = voltas1[l].Split(';');
-                                string clube1 = clube[0];
-                                string clube2 = clube[1];
+                                string clube1 = voltas1[l].ClubeCasa.IdClube;
+                                string clube2 = voltas1[l].ClubeFora.IdClube;
 
-                                if (clube1 == clubes[i])
+                                if (clube1 == dadosClube.Clubes[i].IdClube)
                                 {
                                     contadorCasa1++;
                                 }
-                                else if (clube2 == clubes[i])
+                                else if (clube2 == dadosClube.Clubes[i].IdClube)
                                 {
                                     contadorFora1++;
                                 }
 
-                                if (clube1 == clubes[j])
+                                if (clube1 == dadosClube.Clubes[j].IdClube)
                                 {
                                     contadorCasa2++;
                                 }
-                                else if (clube2 == clubes[j])
+                                else if (clube2 == dadosClube.Clubes[j].IdClube)
                                 {
                                     contadorFora2++;
                                 }
@@ -660,20 +1035,56 @@ namespace Biblioteca
                             //1º Jogo da Jornada
                             if (voltas1.Count == 24)
                             {
+                                verificaJogo1 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[i],
+                                    ClubeFora = dadosClube.Clubes[j],
+                                };
+
+                                verificaJogo2 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[j],
+                                    ClubeFora = dadosClube.Clubes[i],
+                                };
+
                                 //Verificar se o jogo já foi criado alguma vez no campeonato
-                                if (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}")))
+                                if (!(voltas1.Contains(verificaJogo1)) && !(voltas1.Contains(verificaJogo2)))
                                 {
                                     if (rnd > 5)
                                     {
-                                        voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                        jogo.Add("clube[i];clube[j]");
-                                        voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                     else
                                     {
-                                        voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                        jogo.Add("clube[j];clube[i]");
-                                        voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                 }
                             }
@@ -682,35 +1093,70 @@ namespace Biblioteca
                                 //Verificar se os clubes já estão em jogos nesta jornada
                                 for (int l = 24; l < voltas1.Count; l++)
                                 {
-                                    var clube = voltas1[l].Split(';');
-                                    string clube1 = clube[0];
-                                    string clube2 = clube[1];
+                                    string clube1 = voltas1[l].ClubeCasa.IdClube;
+                                    string clube2 = voltas1[l].ClubeFora.IdClube;
 
-                                    if (clube1 == clubes[i] || clube1 == clubes[j])
+                                    if (clube1 == dadosClube.Clubes[i].IdClube || clube1 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
 
-                                    if (clube2 == clubes[i] || clube2 == clubes[j])
+                                    if (clube2 == dadosClube.Clubes[i].IdClube || clube2 == dadosClube.Clubes[j].IdClube)
                                     {
                                         contador++;
                                     }
                                 }
 
+                                verificaJogo1 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[i],
+                                    ClubeFora = dadosClube.Clubes[j],
+                                };
+
+                                verificaJogo2 = new DadosJogo
+                                {
+                                    ClubeCasa = dadosClube.Clubes[j],
+                                    ClubeFora = dadosClube.Clubes[i],
+                                };
+
                                 //Verificar se o jogo já foi criado alguma vez no campeonato
-                                if (contador == 0 && (!(voltas1.Contains($"{clubes[i]};{clubes[j]}")) && !(voltas1.Contains($"{clubes[j]};{clubes[i]}"))))
+                                if (contador == 0 && (!(voltas1.Contains(verificaJogo1)) && !(voltas1.Contains(verificaJogo2))))
                                 {
                                     if (rnd > 5)
                                     {
-                                        voltas1.Add($"{clubes[i]};{clubes[j]}");//1º volta
-                                        jogo.Add("clube[i];clube[j]");
-                                        voltas2.Add($"{clubes[j]};{clubes[i]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                     else
                                     {
-                                        voltas1.Add($"{clubes[j]};{clubes[i]}");//1º volta
-                                        jogo.Add("clube[j];clube[i]");
-                                        voltas2.Add($"{clubes[i]};{clubes[j]}");//2º volta
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[j],
+                                            ClubeFora = dadosClube.Clubes[i],
+                                        };
+
+                                        voltas1.Add(jogo);//1º volta
+
+                                        jogo = new DadosJogo
+                                        {
+                                            ClubeCasa = dadosClube.Clubes[i],
+                                            ClubeFora = dadosClube.Clubes[j],
+                                        };
+
+                                        voltas2.Add(jogo);//2º volta
                                     }
                                 }
                             }
@@ -720,88 +1166,18 @@ namespace Biblioteca
 
             } while (voltas1.Count != 28);
 
-            NomeClubes(voltas1, voltas2, Clubes);
             DataVolta1(voltas1);
             DataVolta2(voltas2);
-            OrdenarListaVoltas1(voltas1);
-            OrdenarListaVoltas2(voltas2);
-            EstadioVoltas(voltas1, voltas2, Clubes);
+            OrdenarListaVoltas(voltas1, voltas2);
+            EstadioVoltas(voltas1, voltas2);
             FinalizarVoltas(voltas1, voltas2);
-            Jogos = PreencherListaJogos(Jogos, dadosJogo, voltas1, voltas2);
+            dadosJornada.Jogos = PreencherListaJogos(dadosJornada, voltas1, voltas2);
 
-            return Jogos;
-        }
-
-        //Identificar os nomes dos clubes através do seu id e adicionar às listas voltas1 e voltas2
-        public void NomeClubes(List<string> voltas1, List<string> voltas2, List<DadosClube> Clubes)
-        {
-            //Clubes que jogam em casa
-            for (int i = 0; i < Clubes.Count; i++)
-            {
-                var campos = Clubes[i].ToString().Split(';');
-                string id = campos[0];
-                string nome = campos[1];
-
-                //Primeira volta
-                for (int j = 0; j < voltas1.Count; j++)
-                {
-                    var info = voltas1[j].Split(';');
-                    string casa = info[0];
-
-                    if (casa == id)
-                    {
-                        voltas1[j] = voltas1[j] + ";" + nome;
-                    }
-                }
-
-                //Segunda volta
-                for (int j = 0; j < voltas2.Count; j++)
-                {
-                    var info = voltas2[j].Split(';');
-                    string casa = info[0];
-
-                    if (casa == id)
-                    {
-                        voltas2[j] = voltas2[j] + ";" + nome;
-                    }
-                }
-            }
-
-            //Clubes que jogam fora
-            for (int i = 0; i < Clubes.Count; i++)
-            {
-                var campos = Clubes[i].ToString().Split(';');
-                string id = campos[0];
-                string nome = campos[1];
-
-                //Primeira volta
-                for (int j = 0; j < voltas1.Count; j++)
-                {
-                    var info = voltas1[j].Split(';');
-                    string fora = info[1];
-
-                    if (fora == id)
-                    {
-                        voltas1[j] = voltas1[j] + ";" + nome;
-                    }
-                }
-
-                //Segunda volta
-                for (int j = 0; j < voltas2.Count; j++)
-                {
-                    var info = voltas2[j].Split(';');
-                    string fora = info[1];
-
-                    if (fora == id)
-                    {
-                        voltas2[j] = voltas2[j] + ";" + nome;
-                    }
-                }
-            }
+            return dadosJornada.Jogos;
         }
 
         //Adicionar a data dos jogos da primeria volta
-        public void DataVolta1(List<string> voltas1)
+        public static void DataVolta1(List<DadosJogo> voltas1)
         {
             //(ano, mes, dia, horas, minutos, segundos)
             DateTime data1 = new DateTime(2020, 2, 22, 15, 0, 0);
@@ -820,7 +1196,7 @@ namespace Biblioteca
             {
                 reset = 0;
 
-                for (int i = tamanhoi, contador = 0; i < tamanhof; i++, reset++)
+                for (int i = tamanhoi, contador; i < tamanhof; i++, reset++)
                 {
                     do
                     {
@@ -849,7 +1225,7 @@ namespace Biblioteca
                             for (int l = tamanhoi; l < i; l++)
                             {
                                 //Verificar se a data selecionada pelo random já foi utilizada
-                                if (voltas1[l].Contains($"{horario.ToShortDateString()};{horario.ToShortTimeString()}"))
+                                if (voltas1[l].Dia.Equals(Convert.ToDateTime(horario.ToShortDateString())) && voltas1[l].Hora.Equals(Convert.ToDateTime(horario.ToShortTimeString())))
                                 {
                                     contador++;
                                 }
@@ -859,7 +1235,8 @@ namespace Biblioteca
                     } while (contador != 0);
 
                     //Adicionar data ao jogo
-                    voltas1[i] = voltas1[i] + ";" + horario.ToShortDateString() + ";" + horario.ToShortTimeString();
+                    voltas1[i].Dia = Convert.ToDateTime(horario.ToShortDateString());
+                    voltas1[i].Hora = Convert.ToDateTime(horario.ToShortTimeString());
 
                 }
 
@@ -874,7 +1251,7 @@ namespace Biblioteca
         }
 
         //Adicionar a data dos jogos da segunda volta
-        public void DataVolta2(List<string> voltas2)
+        public static void DataVolta2(List<DadosJogo> voltas2)
         {
             DateTime data1 = new DateTime(2020, 4, 18, 15, 0, 0);
             DateTime data2 = new DateTime(2020, 4, 18, 13, 0, 0);
@@ -892,7 +1269,7 @@ namespace Biblioteca
             {
                 reset = 0;
 
-                for (int i = tamanhoi, contador = 0; i < tamanhof; i++, reset++)
+                for (int i = tamanhoi, contador; i < tamanhof; i++, reset++)
                 {
                     do
                     {
@@ -921,7 +1298,7 @@ namespace Biblioteca
                             for (int l = tamanhoi; l < i; l++)
                             {
                                 //Verificar se a data selecionada pelo random já foi utilizada
-                                if (voltas2[l].Contains($"{horario.ToShortDateString()};{horario.ToShortTimeString()}"))
+                                if (voltas2[l].Dia.Equals(Convert.ToDateTime(horario.ToShortDateString())) && voltas2[l].Hora.Equals(Convert.ToDateTime(horario.ToShortTimeString())))
                                 {
                                     contador++;
                                 }
@@ -931,7 +1308,8 @@ namespace Biblioteca
                     } while (contador != 0);
 
                     //Adicionar data ao jogo
-                    voltas2[i] = voltas2[i] + ";" + horario.ToShortDateString() + ";" + horario.ToShortTimeString();
+                    voltas2[i].Dia = Convert.ToDateTime(horario.ToShortDateString());
+                    voltas2[i].Hora = Convert.ToDateTime(horario.ToShortTimeString());
 
                 }
 
@@ -945,148 +1323,42 @@ namespace Biblioteca
             } while (tamanhoi != 28);
         }
 
-        //Ordenar a lista da primera volta pela data dos jogos
-        public void OrdenarListaVoltas1(List<string> voltas1)
+        //Ordenar as listas pela data dos jogos
+        public static void OrdenarListaVoltas(List<DadosJogo> voltas1, List<DadosJogo> voltas2)
         {
-            int min = 0;
-            int max = 4;
-
-            do
-            {
-                for (int i = min; i < max; i++)
-                {
-                    var datai = voltas1[i].Split(';');
-                    DateTime diai = Convert.ToDateTime(datai[4]);
-                    DateTime horai = Convert.ToDateTime(datai[5]);
-
-                    for (int j = i + 1; j < max; j++)
-                    {
-                        var dataj = voltas1[j].Split(';');
-                        DateTime diaj = Convert.ToDateTime(dataj[4]);
-                        DateTime horaj = Convert.ToDateTime(dataj[5]);
-                        string aux;
-
-                        if (diai > diaj)
-                        {
-                            aux = voltas1[i];
-                            voltas1[i] = voltas1[j];
-                            voltas1[j] = aux;
-                            diai = diaj;
-                        }
-                        else if (diai == diaj)
-                        {
-                            if (horai > horaj)
-                            {
-                                aux = voltas1[i];
-                                voltas1[i] = voltas1[j];
-                                voltas1[j] = aux;
-                                horai = horaj;
-                            }
-                        }
-                    }
-                }
-
-                min += 4;
-                max += 4;
-
-            } while (max != 32);
-        }
-
-        //Ordenar a lista da segunda volta pela data dos jogos
-        public void OrdenarListaVoltas2(List<string> voltas2)
-        {
-            int min = 0;
-            int max = 4;
-
-            do
-            {
-                for (int i = min; i < max; i++)
-                {
-                    var datai = voltas2[i].Split(';');
-                    DateTime diai = Convert.ToDateTime(datai[4]);
-                    DateTime horai = Convert.ToDateTime(datai[5]);
-
-                    for (int j = i + 1; j < max; j++)
-                    {
-                        var dataj = voltas2[j].Split(';');
-                        DateTime diaj = Convert.ToDateTime(dataj[4]);
-                        DateTime horaj = Convert.ToDateTime(dataj[5]);
-                        string aux;
-
-                        if (diai > diaj)
-                        {
-                            aux = voltas2[i];
-                            voltas2[i] = voltas2[j];
-                            voltas2[j] = aux;
-                            diai = diaj;
-                        }
-                        else if (diai == diaj)
-                        {
-                            if (horai > horaj)
-                            {
-                                aux = voltas2[i];
-                                voltas2[i] = voltas2[j];
-                                voltas2[j] = aux;
-                                horai = horaj;
-                            }
-                        }
-                    }
-                }
-
-                min += 4;
-                max += 4;
-
-            } while (max != 32);
+            voltas1.OrderBy(x => x.Dia).ThenBy(x => x.Hora);
+            voltas2.OrderBy(x => x.Dia).ThenBy(x => x.Hora);
         }
 
         //Adicionar aos jogos o nome do estádio do clube que joga em casa
-        public void EstadioVoltas(List<string> voltas1, List<string> voltas2, List<DadosClube> Clubes)
+        public static void EstadioVoltas(List<DadosJogo> voltas1, List<DadosJogo> voltas2)
         {
-            for (int i = 0; i < Clubes.Count; i++)
+            //Primeira volta
+            for (int i = 0; i < voltas1.Count; i++)
             {
-                var campos = Clubes[i].ToString().Split(';');
-                string id = campos[0];
-                string estadio = campos[3];
+                voltas1[i].Estadio = voltas1[i].ClubeCasa.Estadio;
+            }
 
-                //Primeira volta
-                for (int j = 0; j < voltas1.Count; j++)
-                {
-                    var info = voltas1[j].Split(';');
-                    string casa = info[0];
-
-                    if (casa == id)
-                    {
-                        voltas1[j] = voltas1[j] + ";" + estadio;
-                    }
-                }
-
-                //Segunda volta
-                for (int j = 0; j < voltas2.Count; j++)
-                {
-                    var info = voltas2[j].Split(';');
-                    string casa = info[0];
-
-                    if (casa == id)
-                    {
-                        voltas2[j] = voltas2[j] + ";" + estadio;
-                    }
-                }
+            //Segunda volta
+            for (int i = 0; i < voltas2.Count; i++)
+            {
+                voltas2[i].Estadio = voltas2[i].ClubeCasa.Estadio;
             }
         }
 
         //Criar e adicionar aos jogos o número de id do jogo e o número do id da jornada
-        public void FinalizarVoltas(List<string> voltas1, List<string> voltas2)
+        public static void FinalizarVoltas(List<DadosJogo> voltas1, List<DadosJogo> voltas2)
         {
             //Adicionar o número dos jogos da primeira volta
             for (int i = 0; i < voltas1.Count; i++)
             {
-                voltas1[i] = CriarIdJogoVoltas(i + 1) + ";" + voltas1[i];
+                voltas1[i].IdJogo = CriarIdJogoVoltas(i + 1);
             }
 
             //Adicionar o número dos jogos da segunda volta
             for (int i = 0; i < voltas2.Count; i++)
             {
-                voltas2[i] = CriarIdJogoVoltas(i + 29) + ";" + voltas2[i];
+                voltas2[i].IdJogo = CriarIdJogoVoltas(i + 1);
             }
 
             //Adicionar o número da jornada aos jogos da primeira volta
@@ -1098,7 +1370,7 @@ namespace Biblioteca
             {
                 for (int i = min1; i < max1; i++)
                 {
-                    voltas1[i] = voltas1[i] + ";" + CriarIdJornadaVoltas(jornada1);
+                    voltas1[i].IdJornada = CriarIdJornadaVoltas(jornada1);
                 }
 
                 min1 += 4;
@@ -1116,7 +1388,7 @@ namespace Biblioteca
             {
                 for (int i = min2; i < max2; i++)
                 {
-                    voltas2[i] = voltas2[i] + ";" + CriarIdJornadaVoltas(jornada2);
+                    voltas2[i].IdJornada = CriarIdJornadaVoltas(jornada1);
                 }
 
                 min2 += 4;
@@ -1127,7 +1399,7 @@ namespace Biblioteca
         }
 
         //Criar o id do jogo
-        public string CriarIdJogoVoltas(int i)
+        public static string CriarIdJogoVoltas(int i)
         {
             string idJogo;
 
@@ -1144,7 +1416,7 @@ namespace Biblioteca
         }
 
         //Criar o id da jornada
-        public string CriarIdJornadaVoltas(int jornada)
+        public static string CriarIdJornadaVoltas(int jornada)
         {
             string idJornada;
 
@@ -1161,116 +1433,23 @@ namespace Biblioteca
         }
 
         //Preencher a lista Jogos a partir das lista voltas1 e voltas2
-        public List<DadosJogo> PreencherListaJogos(List<DadosJogo> Jogos, DadosJogo dadosJogo, List<string> voltas1, List<string> voltas2)
+        public static List<DadosJogo> PreencherListaJogos(DadosJornada dadosJornada, List<DadosJogo> voltas1, List<DadosJogo> voltas2)
         {
-            Jogos = new List<DadosJogo>();
+            dadosJornada.Jogos = new List<DadosJogo>();
 
             //Primeira volta
             for (int i = 0; i < voltas1.Count; i++)
             {
-                var campos = voltas1[i].Split(';');
-
-                dadosJogo = new DadosJogo();
-
-                dadosJogo.IdJogo = campos[0];
-                dadosJogo.IdClubeCasa = campos[1];
-                dadosJogo.IdClubeFora = campos[2];
-                dadosJogo.NomeClubeCasa = campos[3];
-                dadosJogo.NomeClubeFora = campos[4];
-                dadosJogo.Dia = Convert.ToDateTime(campos[5]);
-                dadosJogo.Hora = Convert.ToDateTime(campos[6]);
-                dadosJogo.Estadio = campos[7];
-                dadosJogo.IdJornada = campos[8];
-
-                Jogos.Add(dadosJogo);
+                dadosJornada.Jogos.Add(voltas1[i]);
             }
 
             //Segunda volta
             for (int i = 0; i < voltas2.Count; i++)
             {
-                var campos = voltas2[i].Split(';');
-
-                dadosJogo = new DadosJogo();
-
-                dadosJogo.IdJogo = campos[0];
-                dadosJogo.IdClubeCasa = campos[1];
-                dadosJogo.IdClubeFora = campos[2];
-                dadosJogo.NomeClubeCasa = campos[3];
-                dadosJogo.NomeClubeFora = campos[4];
-                dadosJogo.Dia = Convert.ToDateTime(campos[5]);
-                dadosJogo.Hora = Convert.ToDateTime(campos[6]);
-                dadosJogo.Estadio = campos[7];
-                dadosJogo.IdJornada = campos[8];
-
-                Jogos.Add(dadosJogo);
+                dadosJornada.Jogos.Add(voltas2[i]);
             }
 
-            return Jogos;
-        }
-
-        //Procurar ficheiro xml jogoInfo, se não existir cria-se um novo ficheiro, se existir a lista Jogos vai ser preenchida com a informação que estiver contida no ficheiro
-        public List<DadosJogo> LerFicheiroJogos(DadosJogo dadosJogo)
-        {
-            dadosJogo.Jogos = new List<DadosJogo>();
-            string ficheiro = "jogoInfo.xml";
-
-            if (!File.Exists(ficheiro))
-            {
-                GravarInfoJogo(dadosJogo);
-            }
-
-            if (new FileInfo(ficheiro).Length == 0)
-            {
-                GravarInfoJogo(dadosJogo);
-            }
-
-            XmlSerializer serial = new XmlSerializer(typeof(List<DadosJogo>));
-            StreamReader sr = new StreamReader(ficheiro);
-            dadosJogo.Jogos = (List<DadosJogo>)(serial.Deserialize(sr));
-            sr.Close();
-            return dadosJogo.Jogos;
-        }
-
-        //Gerar resultados da jornada selecionada na comboBox
-        public void GerarResultados(DadosJornada dadosJornada, DadosJogo dadosJogo, List<DadosJogo> Jogos, string idJornada, MetodosClube metodosClube, DadosClube dadosClube)
-        {
-            Random rng = new Random();
-            int casa;
-            int fora;
-
-            for (int i = 0; i < dadosJornada.Jornadas.Count; i++)
-            {
-                foreach (var jogos in Jogos)
-                {
-                    //Verificar se o jogo já foi jogado
-                    if (jogos.ToString().Contains(idJornada) && jogos.JogoJogado == false)
-                    {
-                        casa = rng.Next(0, 6);
-                        fora = rng.Next(0, 6);
-
-                        jogos.GolosClubeCasa = casa;
-                        jogos.GolosClubeFora = fora;
-                        jogos.JogoJogado = true;
-
-                        //Atualizar as estatísticas dos clubes após o jogo ser jogado
-                        if (casa > fora)
-                        {
-                            metodosClube.VitoriaClube(dadosClube, jogos.NomeClubeCasa, jogos.GolosClubeCasa, jogos.GolosClubeFora);
-                            metodosClube.DerrotaClube(dadosClube, jogos.NomeClubeFora, jogos.GolosClubeFora, jogos.GolosClubeCasa);
-                        }
-                        else if (casa < fora)
-                        {
-                            metodosClube.VitoriaClube(dadosClube, jogos.NomeClubeFora, jogos.GolosClubeFora, jogos.GolosClubeCasa);
-                            metodosClube.DerrotaClube(dadosClube, jogos.NomeClubeCasa, jogos.GolosClubeCasa, jogos.GolosClubeFora);
-                        }
-                        else
-                        {
-                            metodosClube.EmpateClube(dadosClube, jogos.NomeClubeCasa, jogos.GolosClubeCasa, jogos.GolosClubeFora);
-                            metodosClube.EmpateClube(dadosClube, jogos.NomeClubeFora, jogos.GolosClubeFora, jogos.GolosClubeCasa);
-                        }
-                    }
-                }
-            }
+            return dadosJornada.Jogos;
         }
     }
 }

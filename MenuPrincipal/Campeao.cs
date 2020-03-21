@@ -9,21 +9,23 @@ namespace MenuPrincipal
     {
         public MenuPrincipal MenuPrincipal { get; set; }
 
-        public DadosClassificacao DadosClassificacao { get; set; }
-
         public Campeao(MenuPrincipal Form)
         {
             InitializeComponent();
             MenuPrincipal = Form;
-            DadosClassificacao = new DadosClassificacao();
 
-            lblCampeao.Text = $"Parabéns!!! O campeão é o {DadosClassificacao.Clubes[0].Nome}";
-            lblEstatisticaCampeao.Text = $"Pontos: {DadosClassificacao.Clubes[0].Pontos}{Environment.NewLine}" +
-                $"Número de vitórias: {DadosClassificacao.Clubes[0].NumVitorias}{Environment.NewLine}" +
-                $"Número de derrotas: {DadosClassificacao.Clubes[0].NumDerrotas}{Environment.NewLine}" +
-                $"Número de empates: {DadosClassificacao.Clubes[0].NumEmpates}{Environment.NewLine}" +
-                $"Golos Marcados / Golos sofridos: {DadosClassificacao.Clubes[0].GolosMarcados} / {DadosClassificacao.Clubes[0].GolosSofridos}{Environment.NewLine}" +
-                $"Diferença de golos: {DadosClassificacao.Clubes[0].DiferencaGolos}";
+            DadosClassificacao classificacao = new DadosClassificacao()
+            {
+                Clubes = MetodosClassificacao.OrdenarListaClubes(MenuPrincipal.Clubes)
+            };
+
+            lblCampeao.Text = $"Parabéns!!! O campeão é o {classificacao.Clubes[0].Nome}";
+            lblEstatisticaCampeao.Text = $"Pontos: {classificacao.Clubes[0].Pontos}{Environment.NewLine}" +
+                $"Número de vitórias: {classificacao.Clubes[0].NumVitorias}{Environment.NewLine}" +
+                $"Número de derrotas: {classificacao.Clubes[0].NumDerrotas}{Environment.NewLine}" +
+                $"Número de empates: {classificacao.Clubes[0].NumEmpates}{Environment.NewLine}" +
+                $"Golos Marcados / Golos sofridos: {classificacao.Clubes[0].GolosMarcados} / {classificacao.Clubes[0].GolosSofridos}{Environment.NewLine}" +
+                $"Diferença de golos: {classificacao.Clubes[0].DiferencaGolos}";
         }
 
         private void Campeao_FormClosing(object sender, FormClosingEventArgs e)

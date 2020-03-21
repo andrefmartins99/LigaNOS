@@ -67,7 +67,7 @@ namespace MenuPrincipal
                 return;
             }
 
-            string id = MetodosClube.GerarIdClube(MenuPrincipal.DadosClube.Clubes);
+            string id = MetodosClube.GerarIdClube(MenuPrincipal.Clubes);
             string nome = txtNome.Text.Trim();
             string treinador = txtTreinador.Text.Trim();
             string estadio = txtEstadio.Text.Trim();
@@ -83,7 +83,7 @@ namespace MenuPrincipal
                 return;
             }
 
-            MenuPrincipal.DadosClube = new DadosClube()
+            DadosClube clube = new DadosClube()
             {
                 IdClube = id,
                 Nome = nome,
@@ -91,7 +91,7 @@ namespace MenuPrincipal
                 Estadio = estadio,
             };
 
-            MenuPrincipal.DadosClube.Clubes.Add(MenuPrincipal.DadosClube);
+            MenuPrincipal.Clubes.Add(clube);
 
             MenuPrincipal.EstadobtnCriar();
             MenuPrincipal.PreencherListBoxClubes();
@@ -104,11 +104,11 @@ namespace MenuPrincipal
         {
             bool repetido = false;
 
-            for (int i = 0; repetido != true && i < MenuPrincipal.DadosClube.Clubes.Count; i++)
+            for (int i = 0; repetido != true && i < MenuPrincipal.Clubes.Count; i++)
             {
-                string nome = MenuPrincipal.DadosClube.Clubes[i].Nome;
-                string treinador = MenuPrincipal.DadosClube.Clubes[i].Treinador;
-                string estadio = MenuPrincipal.DadosClube.Clubes[i].Estadio;
+                string nome = MenuPrincipal.Clubes[i].Nome;
+                string treinador = MenuPrincipal.Clubes[i].Treinador;
+                string estadio = MenuPrincipal.Clubes[i].Estadio;
 
                 if (nome.ToLower() == nomes.ToLower() || treinador.ToLower() == treinadores.ToLower() || estadio.ToLower() == estadios.ToLower())
                 {

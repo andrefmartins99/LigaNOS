@@ -6,76 +6,96 @@ namespace Biblioteca
 {
     public static class MetodosClube
     {
-        //Procurar ficheiro xml clubeInfo, se não existir cria-se um novo ficheiro, se existir a lista Clubes vai ser preenchida com a informação que estiver contida no ficheiro
-        public static List<DadosClube> LerFicheiroClubes(DadosClube dadosClube)
+        /// <summary>
+        /// Procurar ficheiro xml clubeInfo, se não existir cria-se um novo ficheiro, se existir a lista Clubes vai ser preenchida com a informação que estiver contida no ficheiro
+        /// </summary>
+        /// <param name="Clubes"></param>
+        /// <returns></returns>
+        public static List<DadosClube> LerFicheiroClubes(List<DadosClube> Clubes)
         {
-            dadosClube.Clubes = new List<DadosClube>();
             string ficheiro = "clubeInfo.xml";
 
             if (!File.Exists(ficheiro))
             {
-                GravarClube(dadosClube);
+                GravarClube(Clubes);
             }
 
             if (new FileInfo(ficheiro).Length == 0)
             {
-                GravarClube(dadosClube);
+                GravarClube(Clubes);
             }
 
             XmlSerializer serial = new XmlSerializer(typeof(List<DadosClube>));
             StreamReader sr = new StreamReader(ficheiro);
-            dadosClube.Clubes = (List<DadosClube>)(serial.Deserialize(sr));
+            Clubes = (List<DadosClube>)(serial.Deserialize(sr));
             sr.Close();
-            return dadosClube.Clubes;
+            return Clubes;
         }
 
-        //Gravar informação da lista Clubes no ficheiro xml clubeInfo
-        public static void GravarClube(DadosClube dadosClube)
+        /// <summary>
+        /// Gravar informação da lista Clubes no ficheiro xml clubeInfo
+        /// </summary>
+        /// <param name="Clubes"></param>
+        public static void GravarClube(List<DadosClube> Clubes)
         {
             string ficheiro = "clubeInfo.xml";
             XmlSerializer serial = new XmlSerializer(typeof(List<DadosClube>));
             StreamWriter sw = new StreamWriter(ficheiro);
-            serial.Serialize(sw, dadosClube.Clubes);
+            serial.Serialize(sw, Clubes);
             sw.Close();
         }
 
-        //Apagar o ficheiro xml clubeInfo
+        /// <summary>
+        /// Apagar o ficheiro xml clubeInfo
+        /// </summary>
         public static void ApagarClube()
         {
             string ficheiro = "clubeInfo.xml";
             File.Delete(ficheiro);
         }
 
-        //Gerar Id do clube a ser criado
+        /// <summary>
+        /// Gerar Id do clube a ser criado
+        /// </summary>
+        /// <param name="Clubes"></param>
+        /// <returns></returns>
         public static string GerarIdClube(List<DadosClube> Clubes)
         {
             int id = Clubes.Count;
-            string idClube = string.Empty;
-
-            idClube = "C0" + $"{id + 1}";
-
+            string idClube = "C0" + $"{id + 1}";
             return idClube;
         }
 
-        //Atualizar, se necessário, o Id dos clubes após um ser eliminado
-        public static void AtualizarListaClubes(DadosClube dadosClube)
+        /// <summary>
+        /// Atualizar, se necessário, o Id dos clubes após um ser eliminado
+        /// </summary>
+        /// <param name="Clubes"></param>
+        public static void AtualizarListaClubes(List<DadosClube> Clubes)
         {
-            for (int i = 0; i < dadosClube.Clubes.Count; i++)
+            DadosClube dadosClube;
+
+            for (int i = 0; i < Clubes.Count; i++)
             {
-                dadosClube = dadosClube.Clubes[i];
+                dadosClube = Clubes[i];
                 dadosClube.IdClube = $"C0" + $"{i + 1}";
                 dadosClube.Nome = dadosClube.Nome;
                 dadosClube.Treinador = dadosClube.Treinador;
                 dadosClube.Estadio = dadosClube.Estadio;
 
-                dadosClube.Clubes[i] = dadosClube;
+                Clubes[i] = dadosClube;
             }
         }
 
-        //Adicionar ao clube vitorioso 1 jogo jogado, 1 vitória, 3 pontos, os golos marcados e os golos sofridos
-        public static void VitoriaClube(DadosClube dadosClube, int golosMarcados, int golosSofridos)
+        /// <summary>
+        /// Adicionar ao clube vitorioso 1 jogo jogado, 1 vitória, 3 pontos, os golos marcados e os golos sofridos
+        /// </summary>
+        /// <param name="dadosClube"></param>
+        /// <param name="golosMarcados"></param>
+        /// <param name="golosSofridos"></param>
+        /// <param name="Clubes"></param>
+        public static void VitoriaClube(DadosClube dadosClube, int golosMarcados, int golosSofridos, List<DadosClube> Clubes)
         {
-            foreach (var clube in dadosClube.Clubes)
+            foreach (var clube in Clubes)
             {
                 if (clube.Nome == dadosClube.Nome)
                 {
@@ -88,10 +108,16 @@ namespace Biblioteca
             }
         }
 
-        //Adicionar ao clube derrotado 1 jogo jogado, 1 derrota, os golos marcados e os golos sofridos
-        public static void DerrotaClube(DadosClube dadosClube, int golosMarcados, int golosSofridos)
+        /// <summary>
+        /// Adicionar ao clube derrotado 1 jogo jogado, 1 derrota, os golos marcados e os golos sofridos
+        /// </summary>
+        /// <param name="dadosClube"></param>
+        /// <param name="golosMarcados"></param>
+        /// <param name="golosSofridos"></param>
+        /// <param name="Clubes"></param>
+        public static void DerrotaClube(DadosClube dadosClube, int golosMarcados, int golosSofridos, List<DadosClube> Clubes)
         {
-            foreach (var clube in dadosClube.Clubes)
+            foreach (var clube in Clubes)
             {
                 if (clube.Nome == dadosClube.Nome)
                 {
@@ -103,10 +129,16 @@ namespace Biblioteca
             }
         }
 
-        //Adicionar aos clubes que empataram 1 jogo jogado, 1 empate, 1 ponto, os golos marcados e os golos sofridos
-        public static void EmpateClube(DadosClube dadosClube, int golosMarcados, int golosSofridos)
+        /// <summary>
+        /// Adicionar aos clubes que empataram 1 jogo jogado, 1 empate, 1 ponto, os golos marcados e os golos sofridos
+        /// </summary>
+        /// <param name="dadosClube"></param>
+        /// <param name="golosMarcados"></param>
+        /// <param name="golosSofridos"></param>
+        /// <param name="Clubes"></param>
+        public static void EmpateClube(DadosClube dadosClube, int golosMarcados, int golosSofridos, List<DadosClube> Clubes)
         {
-            foreach (var clube in dadosClube.Clubes)
+            foreach (var clube in Clubes)
             {
                 if (clube.Nome == dadosClube.Nome)
                 {
@@ -119,10 +151,14 @@ namespace Biblioteca
             }
         }
 
-        //Dar reset às estatísticas dos clubes
-        public static List<DadosClube> ResetClubes(DadosClube dadosClube)
+        /// <summary>
+        /// Dar reset às estatísticas dos clubes
+        /// </summary>
+        /// <param name="Clubes"></param>
+        /// <returns></returns>
+        public static List<DadosClube> ResetClubes(List<DadosClube> Clubes)
         {
-            foreach (var clube in dadosClube.Clubes)
+            foreach (var clube in Clubes)
             {
                 clube.Pontos = 0;
                 clube.NumJogos = 0;
@@ -133,7 +169,7 @@ namespace Biblioteca
                 clube.GolosSofridos = 0;
             }
 
-            return dadosClube.Clubes;
+            return Clubes;
         }
     }
 }

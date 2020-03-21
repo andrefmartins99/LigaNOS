@@ -16,7 +16,7 @@ namespace Biblioteca
 
         public DateTime Hora { get; set; }
 
-        public string Estadio { get;set; }
+        public string Estadio { get; set; }
 
         public string IdJornada { get; set; }
 
@@ -37,6 +37,23 @@ namespace Biblioteca
         public override string ToString()
         {
             return $"{IdJogo};{ClubeCasa.Nome};{ClubeFora.Nome};{Dia.ToString("dd MMM").ToUpper()};{Hora.ToShortTimeString()};{Estadio};{IdJornada};{GolosClubeCasa};{GolosClubeFora};{Resultado};{JogoJogado}";
+        }
+
+        public override bool Equals(object obj)
+        {
+            DadosJogo jogo = obj as DadosJogo;
+
+            if (jogo == null)
+            {
+                return false;
+            }
+
+            return jogo.ClubeCasa == this.ClubeCasa && jogo.ClubeFora == this.ClubeFora;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

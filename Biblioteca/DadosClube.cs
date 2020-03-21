@@ -36,8 +36,6 @@ namespace Biblioteca
             }
         }
 
-        public List<DadosClube> Clubes { get; set; }
-
         public override string ToString()
         {
             return $"{IdClube};{Nome};{Treinador};{Estadio}";

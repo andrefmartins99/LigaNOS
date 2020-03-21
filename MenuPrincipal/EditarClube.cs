@@ -104,12 +104,12 @@ namespace MenuPrincipal
         {
             bool repetido = false;
 
-            for (int i = 0; repetido != true && i < MenuPrincipal.DadosClube.Clubes.Count; i++)
+            for (int i = 0; repetido != true && i < MenuPrincipal.Clubes.Count; i++)
             {
-                string id = MenuPrincipal.DadosClube.Clubes[i].IdClube;
-                string nome = MenuPrincipal.DadosClube.Clubes[i].Nome;
-                string treinador = MenuPrincipal.DadosClube.Clubes[i].Treinador;
-                string estadio = MenuPrincipal.DadosClube.Clubes[i].Estadio;
+                string id = MenuPrincipal.Clubes[i].IdClube;
+                string nome = MenuPrincipal.Clubes[i].Nome;
+                string treinador = MenuPrincipal.Clubes[i].Treinador;
+                string estadio = MenuPrincipal.Clubes[i].Estadio;
 
                 if (Editado.IdClube != id)
                 {
